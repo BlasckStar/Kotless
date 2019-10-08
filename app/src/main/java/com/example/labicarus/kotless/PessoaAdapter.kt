@@ -29,7 +29,7 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
         fun bindView(pessoa: Pessoa) {
             textViewNome.text = pessoa.username
             textViewEmail.text = pessoa.email
-            textViewTelefone.text = pessoa.telefone
+            textViewTelefone.text = pessoa.password
         }
     }
 }

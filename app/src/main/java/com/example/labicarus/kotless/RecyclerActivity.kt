@@ -1,5 +1,6 @@
 package com.example.labicarus.kotless
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -13,9 +14,14 @@ import android.view.ViewGroup
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_callback_server.*
 import kotlinx.android.synthetic.main.activity_recycler.*
 import kotlinx.android.synthetic.main.dialog.view.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,7 +40,7 @@ class RecyclerActivity : AppCompatActivity(){
 
         configureCardView()
 
-        dialog()
+        dialog(this)
         back()
     }
 
@@ -67,34 +73,7 @@ class RecyclerActivity : AppCompatActivity(){
         recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
     }
 
-    fun callback(){
-        val call = RetrofitInitializer().serverService().getList()
-        call.enqueue(object: Callback<JsonElement> {
-            override fun onResponse(call: Call<JsonElement>?,
-                                    response: Response<JsonElement>?) {
-                response?.body()?.let{
-                    val info: JsonElement = it
-                    printView(info)
-                    configureCardView()
-                }
-            }
-
-            override fun onFailure(call: Call<JsonElement>?, t: Throwable?) {
-                Log.e("onFailure error", t?.message)
-                txt_calback.text = t.toString()
-            }
-        })
-    }
-
-    fun printView(response: JsonElement){
-        val gson = Gson()
-        val info = gson.fromJson(response, Array<Teste>::class.java)
-        for (x in 0 until info.size){
-            pessoaList.add(Pessoa(info[x].username, info[x].email, info[x].password))
-        }
-    }
-
-    fun dialog(){
+    fun dialog(conext: Activity){
 
         Fab.setOnClickListener {
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.dialog,
@@ -105,14 +84,18 @@ class RecyclerActivity : AppCompatActivity(){
                 .setView(createdView)
                 .setPositiveButton("Save", object: DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, which: Int) {
+                        //--------------------------- Data ------------------------//
                         val username = createdView.input_username.text.toString()
                         val email = createdView.input_email.text.toString()
                         val password = createdView.input_password.text.toString()
                         val test = Pessoa(username, email, password)
 
-                        val gson: Gson = GsonBuilder().setPrettyPrinting().create()
-                        val person = gson.toJson(test)
-                        TesteWebClient().insert(person)
+                        //--------------------------- Convert ---------------------//
+
+                        val gson = Gson()
+                        val jsinho = gson.toJsonTree(test)
+                        TesteWebClient().insert(jsinho, pessoaList, conext, recyclerViewPessoas)
+
                     }
                 })
                 .show()

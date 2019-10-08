@@ -7,7 +7,10 @@ import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import okhttp3.MediaType
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,18 +49,33 @@ class TesteWebClient {
         recycler.smoothScrollToPosition(list.size)
     }
 
-    fun insert(pessoa: String?){
+    fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, context: Activity, recycler: RecyclerView){
         val call = RetrofitInitializer().serverService().insert(pessoa)
-        call.enqueue(object: Callback<RequestBody> {
-            override fun onFailure(call: Call<RequestBody>, t: Throwable?) {
+        call.enqueue(object: Callback<JsonElement> {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
                 Log.e("On Failure error", t?.message)
             }
 
-            override fun onResponse(call: Call<RequestBody>, response: Response<RequestBody>) {
-
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+                teste(list, context, recycler)
             }
 
 
         })
     }
+
+    fun callback(list: MutableList<Pessoa>?, context: Activity){
+        val call = RetrofitInitializer().serverService().getList()
+        call.enqueue(object : Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let{
+                    val info = it
+                }
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+            }
+        })
+    }
+
+
 }
