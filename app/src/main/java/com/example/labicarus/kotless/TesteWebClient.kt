@@ -113,6 +113,7 @@ class TesteWebClient {
                 login = true
                 user = info[0].username.toString()
                 Toast.makeText(context, "Ola,$user", Toast.LENGTH_SHORT).show()
+                LoginActivity.LoginClass.activity?.finish()
             }
         }
     }

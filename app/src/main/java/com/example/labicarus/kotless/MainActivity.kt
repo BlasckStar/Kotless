@@ -34,8 +34,12 @@ class MainActivity : AppCompatActivity() {
 
     fun recycler(){
         btn_recycler.setOnClickListener {
-            val intent = Intent(this, RecyclerActivity::class.java)
-            startActivity(intent)
+            if(TesteWebClient.login){
+                val intent = Intent(this, RecyclerActivity::class.java)
+                startActivity(intent)
+            }else{
+                Toast.makeText(this, "Efetue o login!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

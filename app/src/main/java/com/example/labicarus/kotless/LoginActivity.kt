@@ -1,5 +1,6 @@
 package com.example.labicarus.kotless
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -16,9 +17,14 @@ import retrofit2.Response
 
 class LoginActivity: AppCompatActivity() {
 
-    companion object{
-        var user:String = ""
+    class LoginClass{
+        companion object{
+            var activity: Activity? = null
+        }
     }
+
+    var fa: Activity = this
+
     var list: MutableList<Pessoa>? = mutableListOf()
 
 
@@ -27,19 +33,16 @@ class LoginActivity: AppCompatActivity() {
         setContentView(R.layout.login_activity)
         val intent = Intent()
         //----------------Function-------------------//
-
+        LoginClass.activity = this@LoginActivity
         //----------------buttons--------------------//
         back()
         login()
-        userUpdate()
         teste()
     }
 
-    var handler = Handler()
-
     fun back(){
         btn_login_back.setOnClickListener {
-            finish()
+            //finish()
         }
     }
 
@@ -49,18 +52,14 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    fun userUpdate(){
-        btn_login_enter.setOnClickListener {
-        }
-    }
 
     fun teste(){
         btn_login_enter.setOnClickListener {
-            if (input_login_username.text.toString() != "" || input_login_password.text.toString() != ""){
+            if (input_login_username.text.toString() != "" && input_login_password.text.toString() != ""){
                 val username =  input_login_username.text.toString()
                 val password = input_login_password.text.toString()
                 TesteWebClient().getUser(username, password, list,this)
-                finish()
+                //finish()
             }else{
                 Toast.makeText(this, "Entre com login e senha!", Toast.LENGTH_SHORT).show()
             }
