@@ -19,16 +19,15 @@ class LoginActivity: AppCompatActivity() {
     companion object{
         var user:String = ""
     }
-    var list: MutableList<Pessoa>? = null
-    var login: Boolean = false
-    var loginIndex: Int = 0
+    var list: MutableList<Pessoa>? = mutableListOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
         val intent = Intent()
         //----------------Function-------------------//
-        TesteWebClient().callback(list, this)
+
         //----------------buttons--------------------//
         back()
         login()
@@ -57,9 +56,14 @@ class LoginActivity: AppCompatActivity() {
 
     fun teste(){
         btn_login_enter.setOnClickListener {
-            user = input_login_username.text.toString()
-            finish()
-
+            if (input_login_username.text.toString() != "" || input_login_password.text.toString() != ""){
+                val username =  input_login_username.text.toString()
+                val password = input_login_password.text.toString()
+                TesteWebClient().getUser(username, password, list,this)
+                finish()
+            }else{
+                Toast.makeText(this, "Entre com login e senha!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

@@ -11,6 +11,9 @@ interface TesteService {
     @Headers("Content-Type: application/json")
     fun getList(): Call<JsonElement>
 
+    @GET("loginService")
+    fun getListId(@Query("username") username: String): Call<JsonElement>
+
     @POST("loginService")
     @Headers("Content-Type: application/json")
     fun insert(@Body pessoa: JsonElement): Call<JsonElement>

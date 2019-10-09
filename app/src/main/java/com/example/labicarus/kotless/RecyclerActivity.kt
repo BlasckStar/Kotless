@@ -6,25 +6,13 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.activity_callback_server.*
 import kotlinx.android.synthetic.main.activity_recycler.*
 import kotlinx.android.synthetic.main.dialog.view.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class RecyclerActivity : AppCompatActivity(){
 
@@ -95,7 +83,6 @@ class RecyclerActivity : AppCompatActivity(){
                         val gson = Gson()
                         val jsinho = gson.toJsonTree(test)
                         TesteWebClient().insert(jsinho, pessoaList, conext, recyclerViewPessoas)
-
                     }
                 })
                 .show()
