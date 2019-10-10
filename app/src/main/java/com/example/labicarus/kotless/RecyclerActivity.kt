@@ -118,7 +118,7 @@ class RecyclerActivity : AppCompatActivity(){
                 window.decorView as ViewGroup,
                 false)
             AlertDialog.Builder(this@RecyclerActivity)
-                .setTitle("Delete User")
+                .setTitle("Update user")
                 .setView(createdView)
                 .setPositiveButton("Update", object: DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, which: Int) {
