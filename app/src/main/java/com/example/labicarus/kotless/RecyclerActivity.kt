@@ -1,7 +1,9 @@
 package com.example.labicarus.kotless
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -10,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_recycler.*
 import kotlinx.android.synthetic.main.dialog.view.*
@@ -17,6 +20,7 @@ import kotlinx.android.synthetic.main.dialog.view.*
 class RecyclerActivity : AppCompatActivity(){
 
     val pessoaList: MutableList<Pessoa> = mutableListOf()
+    val list: MutableList<Pessoa> = mutableListOf()
 
     lateinit var pessoaAdapter: PessoaAdapter
 
@@ -24,11 +28,13 @@ class RecyclerActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler)
 
-        TesteWebClient().teste(pessoaList, this, recyclerViewPessoas)
+        TesteWebClient().callbackRecycler(pessoaList, this, recyclerViewPessoas, this)
 
         configureCardView()
 
-        dialog(this)
+        dialog(this, this)
+        deleteDialog(this, this)
+        updateDialog(this, this)
         back()
     }
 
@@ -39,15 +45,11 @@ class RecyclerActivity : AppCompatActivity(){
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -61,7 +63,7 @@ class RecyclerActivity : AppCompatActivity(){
         recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
     }
 
-    fun dialog(conext: Activity){
+    fun dialog(activity: Activity, context: Context){
 
         Fab.setOnClickListener {
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.dialog,
@@ -73,20 +75,62 @@ class RecyclerActivity : AppCompatActivity(){
                 .setPositiveButton("Save", object: DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         //--------------------------- Data ------------------------//
-                        val username = createdView.input_username.text.toString()
+                        val username = createdView.update_input_username.text.toString()
                         val email = createdView.input_email.text.toString()
                         val password = createdView.input_password.text.toString()
-                        val test = Pessoa(username, email, password)
-
+                        val test = PessoaPost(username, email, password)
                         //--------------------------- Convert ---------------------//
-
                         val gson = Gson()
                         val jsinho = gson.toJsonTree(test)
-                        TesteWebClient().insert(jsinho, pessoaList, conext, recyclerViewPessoas)
+                        startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
+                        TesteWebClient().insert(jsinho, pessoaList, activity, recyclerViewPessoas, context)
                     }
                 })
                 .show()
         }
+    }
 
+    fun deleteDialog(activity: Activity, context: Context){
+        btn_recycler_delete.setOnClickListener{
+            Toast.makeText(context, "Não funcionou", Toast.LENGTH_SHORT).show()
+
+            val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.update_dialog,
+                window.decorView as ViewGroup,
+                false)
+            AlertDialog.Builder(this@RecyclerActivity)
+                .setTitle("Delete User")
+                .setView(createdView)
+                .setPositiveButton("Delete", object: DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        //--------------------------- Data ------------------------//
+                        val username = createdView.update_input_username.text.toString()
+                        startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
+                        TesteWebClient().callbackIdToDelete(username, list, context, this@RecyclerActivity, recyclerViewPessoas)
+                    }
+                })
+                .show()
+        }
+    }
+
+    fun updateDialog(activity: Activity, context: Context){
+        btn_recycler_update.setOnClickListener{
+            val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.dialog,
+                window.decorView as ViewGroup,
+                false)
+            AlertDialog.Builder(this@RecyclerActivity)
+                .setTitle("Delete User")
+                .setView(createdView)
+                .setPositiveButton("Update", object: DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        //--------------------------- Data ------------------------//
+                        val username = createdView.update_input_username.text.toString()
+                        val email = createdView.input_email.text.toString()
+                        val password = createdView.input_password.text.toString()
+                        startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
+                        TesteWebClient().getIdToUpdate(this@RecyclerActivity, this@RecyclerActivity, list, recyclerViewPessoas,username, email, password )
+                    }
+                })
+                .show()
+        }
     }
 }

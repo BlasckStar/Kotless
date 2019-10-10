@@ -8,33 +8,32 @@
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
 
     <Button
-            android:text="Recycler"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/btn_recycler"
-            app:layout_constraintEnd_toEndOf="@+id/btn_login"
-            android:layout_marginBottom="16dp" app:layout_constraintBottom_toTopOf="@+id/btn_login"/>
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Usuarios"
+            app:layout_constraintStart_toStartOf="@+id/toolbar"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
     <Button
-            android:text="Request"
+            android:id="@+id/btn_request"
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_request" android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_recycler"
-            app:layout_constraintEnd_toEndOf="@+id/btn_recycler"/>
-    <Button
-            android:text="login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_login" android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"/>
+            android:layout_marginStart="16dp"
+            android:text="Perfil"
+            app:layout_constraintStart_toEndOf="@+id/btn_recycler"
+            app:layout_constraintTop_toTopOf="@+id/btn_recycler" />
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/darker_gray"
             android:minHeight="?attr/actionBarSize"
@@ -54,7 +53,7 @@
             android:layout_marginEnd="16dp"
             android:text="Logue por favor"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintEnd_toStartOf="@+id/btn_logout"
             app:layout_constraintStart_toStartOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
@@ -70,5 +69,16 @@
             app:layout_constraintStart_toStartOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="@+id/toolbar"
             app:srcCompat="@drawable/sword" />
+
+    <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sair"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 </android.support.constraint.ConstraintLayout>

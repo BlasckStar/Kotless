@@ -17,4 +17,13 @@ interface TesteService {
     @POST("loginService")
     @Headers("Content-Type: application/json")
     fun insert(@Body pessoa: JsonElement): Call<JsonElement>
+
+    @DELETE("loginService/{id}")
+    fun delete(@Path("id")pessoa: String): Call<JsonElement>
+
+    @PUT("loginService/{id}")
+    fun update(@Path("id")pessoa: String,
+               @Field("username")username: String?,
+               @Field("email")email: String?,
+               @Field("password")password: String?): Call<JsonElement>
 }

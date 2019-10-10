@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.pessoa_item.view.*
 
-class PessoaAdapter(private val context: Context, private var pessoaList: MutableList<Pessoa>):
+class PessoaAdapter(private val context: Context, private var pessoaList: MutableList<Pessoa>?):
     RecyclerView.Adapter<PessoaAdapter.PessoaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PessoaViewHolder {
@@ -15,10 +15,10 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
         return PessoaViewHolder(view)
     }
 
-    override fun getItemCount() = pessoaList.size
+    override fun getItemCount() = pessoaList!!.size
 
     override fun onBindViewHolder(holder: PessoaViewHolder, position: Int) {
-        holder.bindView(pessoaList[position])
+        holder.bindView(pessoaList!![position])
     }
 
     class PessoaViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

@@ -3,6 +3,8 @@ package com.example.labicarus.kotless
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -25,14 +27,17 @@ class TesteWebClient {
         val passwords: MutableList<String>? = null
         var login: Boolean = false
         var user: String = ""
-
+        var email: String = ""
+        var userId: String = ""
+        var usableUserId: String = ""
+        var timeOut: Long = 500
     }
 
     var json_getById = ""
 
     //----------------------------------RECYCLER CALL------------------------------//
 
-    fun teste(list: MutableList<Pessoa>, context: Activity, recycler: RecyclerView){
+    fun callbackRecycler(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView,context: Context ){
         val call = RetrofitInitializer().serverService().getList()
         call.enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>?,
@@ -40,11 +45,12 @@ class TesteWebClient {
                 response?.body()?.let{
                     val info: JsonElement = it
                     printView(info, list)
-                    configureCardView(context, list, recycler)
+                    configureCardView(activity, list, recycler)
                 }
             }
             override fun onFailure(call: Call<JsonElement>?, t: Throwable?) {
-                Log.e("onFailure erro: ", t?.message)
+                stopActivity()
+                Log.e("onFailure error: ", t?.message)
             }
         })
     }
@@ -52,29 +58,32 @@ class TesteWebClient {
     fun printView(response: JsonElement, list: MutableList<Pessoa>?){
         val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
-        for (x in 0 until info.size){
-            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password))
+        list?.clear()
+        for (x in info.indices){
+            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
         }
     }
 
-    fun configureCardView(context: Activity, list: MutableList<Pessoa>, recycler: RecyclerView){
+    fun configureCardView(context: Activity, list: MutableList<Pessoa>?, recycler: RecyclerView){
         val pessoaAdapter = PessoaAdapter(context, list)
         recycler.adapter = pessoaAdapter
         recycler.layoutManager = LinearLayoutManager(context)
-        recycler.smoothScrollToPosition(list.size)
+        recycler.smoothScrollToPosition(list!!.size)
+        stopActivity()
     }
 
     //---------------------------------------- RECYCLER INSERT -----------------------------------------//
 
-    fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, context: Activity, recycler: RecyclerView){
+    fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, activity: Activity, recycler: RecyclerView, context: Context){
         val call = RetrofitInitializer().serverService().insert(pessoa)
         call.enqueue(object: Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
+                stopActivity()
                 Log.e("On Failure error", t?.message)
             }
 
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                teste(list, context, recycler)
+                callbackRecycler(list, activity, recycler, context)
             }
 
 
@@ -92,6 +101,7 @@ class TesteWebClient {
                 }
             }
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                stopActivity()
                 Toast.makeText(context,"WTF",Toast.LENGTH_SHORT).show()
             }
 
@@ -102,37 +112,159 @@ class TesteWebClient {
         val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
         for (x in info.indices){
-            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password))
+            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
         }
         if(info.size > 1){
-            Toast.makeText(context, "Não existe", Toast.LENGTH_SHORT).show()
+            stopActivity()
+            Toast.makeText(context, "Usuario/Senha inválido", Toast.LENGTH_SHORT).show()
         }
         if (info.size == 1){
-            Toast.makeText(context, info[0].username, Toast.LENGTH_SHORT).show()
             if(info[0].password == password){
                 login = true
                 user = info[0].username.toString()
+                userId = info[0]._id.toString()
+                email = info[0].email.toString()
                 Toast.makeText(context, "Ola,$user", Toast.LENGTH_SHORT).show()
+                stopActivity()
                 LoginActivity.LoginClass.activity?.finish()
+            }else{
+                stopActivity()
+                Toast.makeText(context, "Usuario/Senha inválido", Toast.LENGTH_SHORT).show()
             }
+        }
+        if(info.isEmpty()){
+            stopActivity()
+            Toast.makeText(context, "Usuario/Senha inválido", Toast.LENGTH_SHORT).show()
         }
     }
 
-    //-------------------------------------- ---------------------------------------------------------//
+    private fun stopActivity(){
+        val handler = Handler()
+        handler.postDelayed({
+            SplashActivity.SplashClass.activity!!.finish()
+        }, timeOut)
+    }
 
+    fun logut(){
+        TesteWebClient.user = ""
+        TesteWebClient.login = false
+    }
 
-    fun callback(list: MutableList<Pessoa>?, context: Activity){
-        val call = RetrofitInitializer().serverService().getList()
+    //-------------------------------------- Delete query ---------------------------------------------------------//
+    fun callbackIdToDelete(response: String,list: MutableList<Pessoa>, context: Context, activity: Activity, recycler: RecyclerView){
+        val call = RetrofitInitializer().serverService().getListId(response)
         call.enqueue(object : Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
+                    getIdToDelete(info, list, context, activity, recycler)
                 }
             }
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+
             }
         })
     }
+
+    fun getIdToDelete(response: JsonElement, list: MutableList<Pessoa>?, context: Context, activity: Activity, recycler: RecyclerView){
+        val gson = Gson()
+        val info = gson.fromJson(response, Array<Teste>::class.java)
+        for (x in info.indices){
+            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+        }
+        if(info.size > 1){
+            Toast.makeText(context, "Mais de um usuario", Toast.LENGTH_SHORT).show()
+        }
+        if (info.size == 1){
+            usableUserId = info[0]._id.toString()
+            delete(context, list, activity, recycler)
+        }
+        if(info.isEmpty()){
+            Toast.makeText(context, "Usuario não existe", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun delete(context: Context, list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
+        val call = RetrofitInitializer().serverService().delete(usableUserId)
+        call.enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                Toast.makeText(context, "Usuario deletado", Toast.LENGTH_SHORT).show()
+                callbackRecycler(list, activity, recycler, context)
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
+                Toast.makeText(context,"Erro", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+
+    //--------------------------- Teste PUT --------------------------------------------------------//
+
+    fun getIdToUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String, email:String, password: String){
+        val call = RetrofitInitializer().serverService().getListId(username)
+        call.enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let{
+                    val info = it
+                    checkUpdate(activity, context, list, recycler, username, email, password, info)
+                }
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+
+            }
+        })
+    }
+
+    fun checkUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String, email:String, password: String, response: JsonElement){
+        val gson = Gson()
+        val info = gson.fromJson(response, Array<Teste>::class.java)
+        for (x in info.indices){
+            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+        }
+        if(info.size > 1){
+            Toast.makeText(context, "Mais de um usuario", Toast.LENGTH_SHORT).show()
+        }
+        if (info.size == 1){
+            usableUserId = info[0]._id.toString()
+            callbackUpdate(activity, context, list, recycler, username, email, password, info[0]._id.toString())
+
+        }
+        if(info.isEmpty()){
+            Toast.makeText(context, "Usuario não existe", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun callbackUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username: String, email: String, password: String, id: String){
+
+        var _username: String? = ""
+        var _email: String? = ""
+        var _password:String? = ""
+
+        if (username == _username) _username = list!![0].username else _username = username
+
+        if (email == _email) _email = list!![0].email else _email = email
+
+        if (password == _password) _password = list!![0].password else _password = password
+
+
+        val call = RetrofitInitializer().serverService().update(id, _username, _email, _password)
+        call.enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let{
+                    val info = it
+                    if(info.toString() != ""){
+                        Toast.makeText(context, "Update complete", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                Toast.makeText(context, "deu errado o Update", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+    //--------------------------- Teste PUT --------------------------------------------------------//
 
     fun callbackSplash(list: MutableList<String>?, password: MutableList<String>?){
         val call = RetrofitInitializer().serverService().getList()

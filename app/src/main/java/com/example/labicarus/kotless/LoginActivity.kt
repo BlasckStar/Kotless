@@ -1,5 +1,6 @@
 package com.example.labicarus.kotless
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +20,11 @@ class LoginActivity: AppCompatActivity() {
 
     class LoginClass{
         companion object{
+            @SuppressLint("StaticFieldLeak")
             var activity: Activity? = null
+
+            @SuppressLint("StaticFieldLeak")
+            var loading: Activity? = null
         }
     }
 
@@ -31,7 +36,6 @@ class LoginActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-        val intent = Intent()
         //----------------Function-------------------//
         LoginClass.activity = this@LoginActivity
         //----------------buttons--------------------//
@@ -42,7 +46,7 @@ class LoginActivity: AppCompatActivity() {
 
     fun back(){
         btn_login_back.setOnClickListener {
-            //finish()
+            finish()
         }
     }
 
@@ -58,6 +62,7 @@ class LoginActivity: AppCompatActivity() {
             if (input_login_username.text.toString() != "" && input_login_password.text.toString() != ""){
                 val username =  input_login_username.text.toString()
                 val password = input_login_password.text.toString()
+                startActivity(Intent(this, SplashActivity::class.java))
                 TesteWebClient().getUser(username, password, list,this)
                 //finish()
             }else{

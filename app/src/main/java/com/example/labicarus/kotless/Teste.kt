@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName
 
 data class Teste (
 
+    @field:SerializedName("_id")
+    @Expose
+    val _id: String? = null,
+
     @field:SerializedName("username")
     @Expose
     val username: String? = null,
