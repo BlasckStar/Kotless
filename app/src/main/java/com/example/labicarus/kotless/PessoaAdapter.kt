@@ -25,6 +25,7 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
         val textViewNome = itemView.textViewNome
         val textViewEmail = itemView.textViewEmail
         val textViewTelefone = itemView.textViewTelefone
+        val btn = itemView.btn_flt_update
 
         fun bindView(pessoa: Pessoa) {
             textViewNome.text = pessoa.username

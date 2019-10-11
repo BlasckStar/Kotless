@@ -13,9 +13,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.labicarus.kotless.TesteWebClient.Companion.email
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_recycler.*
 import kotlinx.android.synthetic.main.dialog.view.*
+import kotlinx.android.synthetic.main.pessoa_item.*
+import kotlinx.android.synthetic.main.pessoa_item.view.*
 
 class RecyclerActivity : AppCompatActivity(){
 
@@ -114,23 +117,22 @@ class RecyclerActivity : AppCompatActivity(){
 
     fun updateDialog(activity: Activity, context: Context){
         btn_recycler_update.setOnClickListener{
-            val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.dialog,
+            val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.update_dialog,
                 window.decorView as ViewGroup,
                 false)
             AlertDialog.Builder(this@RecyclerActivity)
-                .setTitle("Update user")
+                .setTitle("Entre com o seu usuario")
                 .setView(createdView)
                 .setPositiveButton("Update", object: DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         //--------------------------- Data ------------------------//
                         val username = createdView.update_input_username.text.toString()
-                        val email = createdView.input_email.text.toString()
-                        val password = createdView.input_password.text.toString()
                         startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
-                        TesteWebClient().getIdToUpdate(this@RecyclerActivity, this@RecyclerActivity, list, recyclerViewPessoas,username, email, password )
+                        TesteWebClient().getIdToUpdate(this@RecyclerActivity, this@RecyclerActivity, list, recyclerViewPessoas,username)
                     }
                 })
                 .show()
         }
     }
+
 }

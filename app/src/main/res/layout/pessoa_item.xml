@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             android:id="@+id/item_layout"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/item_layout"
                                              android:layout_width="match_parent"
                                              android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                                        android:id="@+id/cadrView"
+    <android.support.v7.widget.CardView
+            android:id="@+id/cadrView"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
 
@@ -18,16 +18,15 @@
                                         android:layout_marginTop="8dp"
                                         android:foreground="?android:attr/selectableItemBackground"
                                         android:innerRadius="0dp"
-                                        card_view:cardElevation="10dp"
-                                        card_view:layout_constraintBottom_toBottomOf="parent"
-                                        card_view:layout_constraintEnd_toEndOf="parent"
-                                        card_view:layout_constraintStart_toStartOf="parent"
-                                        card_view:layout_constraintTop_toTopOf="parent"
-                                        card_view:cardPreventCornerOverlap="false">
+                                        app:cardElevation="10dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:cardPreventCornerOverlap="false">
 
-        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                     android:layout_width="match_parent"
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
                                                      android:layout_height="wrap_content"
 
                                                      android:paddingLeft="8dp">
@@ -49,14 +48,13 @@
                     android:id="@+id/textViewTelefone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toStartOf="@+id/textViewEmail"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_bias="0.14"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewNome"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textViewNome" />
 
             <TextView
                     android:id="@+id/textViewEmail"
@@ -70,6 +68,34 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textViewTelefone"
                     app:layout_constraintTop_toBottomOf="@+id/textViewNome"/>
+
+            <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/flt_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#00FA2323"
+                    android:clickable="true"
+                    app:fabSize="mini"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.97"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textViewNome"
+                    app:srcCompat="@android:drawable/ic_delete" />
+
+            <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/btn_flt_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#00EB3E3E"
+                    android:backgroundTintMode="src_in"
+                    android:clickable="true"
+                    app:fabSize="mini"
+                    app:layout_constraintEnd_toStartOf="@+id/flt_delete"
+                    app:layout_constraintHorizontal_bias="0.96"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/flt_delete"
+                    app:rippleColor="#00312727"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
