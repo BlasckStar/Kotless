@@ -8,41 +8,43 @@
 
     <android.support.v7.widget.CardView
             android:id="@+id/cadrView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-                                        android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
 
-                                        android:layout_marginEnd="4dp"
-                                        android:layout_marginStart="8dp"
-                                        android:layout_marginTop="8dp"
-                                        android:foreground="?android:attr/selectableItemBackground"
-                                        android:innerRadius="0dp"
-                                        app:cardElevation="10dp"
-                                        app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:cardPreventCornerOverlap="false">
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:innerRadius="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:cardBackgroundColor="@android:color/transparent"
+            tools:visibility="visible">
 
         <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                                                     android:layout_height="wrap_content"
+                android:layout_height="wrap_content"
 
-                                                     android:paddingLeft="8dp">
+                android:backgroundTint="#00FFFFFF"
+                android:paddingLeft="8dp">
 
             <TextView
                     android:id="@+id/textViewNome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                     android:id="@+id/textViewTelefone"
@@ -60,14 +62,14 @@
                     android:id="@+id/textViewEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:text="TextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textViewTelefone"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewNome"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textViewNome" />
 
             <android.support.design.widget.FloatingActionButton
                     android:id="@+id/flt_delete"

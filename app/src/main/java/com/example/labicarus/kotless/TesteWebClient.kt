@@ -283,6 +283,7 @@ class TesteWebClient {
                     if(info.toString() != ""){
                         stopActivity()
                         Toast.makeText(context, "Update complete", Toast.LENGTH_SHORT).show()
+                        callbackRecycler(list, activity, recycler, context)
                     }
                 }
             }

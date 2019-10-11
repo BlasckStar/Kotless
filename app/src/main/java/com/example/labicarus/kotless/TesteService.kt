@@ -21,6 +21,7 @@ interface TesteService {
     @DELETE("loginService/{id}")
     fun delete(@Path("id")pessoa: String): Call<JsonElement>
 
+    @FormUrlEncoded
     @PUT("loginService/{id}")
     fun update(@Path("id")pessoa: String,
                @Field("username")username: String?,
