@@ -230,8 +230,9 @@ class TesteWebClient {
 
         val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
+        list!!.clear()
         for (x in info.indices){
-            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+            list.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
         }
         if(info.size > 1){
             Toast.makeText(context, "Mais de um usuario", Toast.LENGTH_SHORT).show()
