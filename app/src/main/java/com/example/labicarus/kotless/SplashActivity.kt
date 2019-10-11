@@ -10,7 +10,7 @@ class SplashActivity: AppCompatActivity(){
     class SplashClass{
         companion object{
             @SuppressLint("StaticFieldLeak")
-            var activity: Activity? = null
+            var activity: Activity = Activity()
         }
     }
 
@@ -18,6 +18,9 @@ class SplashActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_screen)
         SplashClass.activity = this@SplashActivity
-        MainActivity().initSwitch()
+        if(MainActivity.init){
+            MainActivity().initSwitch()
+
+        }
     }
 }

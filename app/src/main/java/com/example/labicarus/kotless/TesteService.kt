@@ -12,7 +12,7 @@ interface TesteService {
     fun getList(): Call<JsonElement>
 
     @GET("loginService")
-    fun getListId(@Query("username") username: String): Call<JsonElement>
+    fun getListId(@Query("username") username: String?): Call<JsonElement>
 
     @POST("loginService")
     @Headers("Content-Type: application/json")

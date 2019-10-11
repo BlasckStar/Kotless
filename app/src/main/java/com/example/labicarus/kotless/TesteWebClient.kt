@@ -35,11 +35,11 @@ class TesteWebClient {
         val usernames: MutableList<String>? = null
         val passwords: MutableList<String>? = null
         var login: Boolean = false
-        var user: String = ""
-        var email: String = ""
+        var email: String? = null
+        var user: String? = null
         var userId: String = ""
         var usableUserId: String = ""
-        var timeOut: Long = 500
+        var timeOut: Long = 1000
     }
 
     var json_getById = ""
@@ -154,7 +154,7 @@ class TesteWebClient {
     }
 
     fun logut(){
-        TesteWebClient.user = ""
+        user = ""
         TesteWebClient.login = false
     }
 
@@ -318,4 +318,62 @@ class TesteWebClient {
         })
     }
 
+    //----------------------------------------------------------------------------------------------//
+
+    fun saveInfo(context: Context){
+        val sharedPreference = SharedPreference(context)
+        sharedPreference.clear()
+        sharedPreference.save("username", user)
+        Toast.makeText(context, "Nomes Salvos", Toast.LENGTH_SHORT).show()
+    }
+
+    fun retrieveInfo(context: Context, list: MutableList<Pessoa>?){
+        val sharedPreference = SharedPreference(context)
+        if (!login){
+            if(sharedPreference.getValueString("username")!=null){
+                val info = sharedPreference.getValueString("username").toString()
+                callbackInfo(info, context, list)
+                login = true
+            }else{
+                stopActivityLogin(context)
+            }
+        }
+    }
+
+    fun callbackInfo(string: String?, context: Context, list: MutableList<Pessoa>?){
+        val call = RetrofitInitializer().serverService().getListId(string)
+        call.enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let{
+                    val info = it
+                    val gson = Gson()
+                    val jsinho = gson.fromJson(info, Array<Teste>::class.java)
+                    list?.clear()
+                    for(x in 0 until jsinho.size){
+                        list!!.add(Pessoa(jsinho[x].username, jsinho[x].email, jsinho[x].password, jsinho[x]._id))
+                    }
+                    user = list!![0].username.toString()
+                    email = list!![0].email.toString()
+                    Toast.makeText(context, "Login automatico ativado", Toast.LENGTH_SHORT).show()
+
+                    stopActivity()
+
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                stopActivityLogin(context)
+                Toast.makeText(context, "User não existe", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    private fun stopActivityLogin(context: Context){
+        val handler = Handler()
+        handler.postDelayed({
+            SplashActivity.SplashClass.activity!!.finish()
+            startActivity(context, Intent(context, LoginActivity::class.java), Bundle())
+        }, timeOut)
+    }
 }

@@ -13,12 +13,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.labicarus.kotless.TesteWebClient.Companion.email
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_recycler.*
 import kotlinx.android.synthetic.main.dialog.view.*
-import kotlinx.android.synthetic.main.pessoa_item.*
-import kotlinx.android.synthetic.main.pessoa_item.view.*
 
 class RecyclerActivity : AppCompatActivity(){
 

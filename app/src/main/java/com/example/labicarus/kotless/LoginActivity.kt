@@ -40,7 +40,6 @@ class LoginActivity: AppCompatActivity() {
         LoginClass.activity = this@LoginActivity
         //----------------buttons--------------------//
         back()
-        login()
         teste()
     }
 
@@ -50,13 +49,6 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    fun login(){
-        btn_login_enter.setOnClickListener {
-
-        }
-    }
-
-
     fun teste(){
         btn_login_enter.setOnClickListener {
             if (input_login_username.text.toString() != "" && input_login_password.text.toString() != ""){
@@ -64,7 +56,6 @@ class LoginActivity: AppCompatActivity() {
                 val password = input_login_password.text.toString()
                 startActivity(Intent(this, SplashActivity::class.java))
                 TesteWebClient().getUser(username, password, list,this)
-                //finish()
             }else{
                 Toast.makeText(this, "Entre com login e senha!", Toast.LENGTH_SHORT).show()
             }
