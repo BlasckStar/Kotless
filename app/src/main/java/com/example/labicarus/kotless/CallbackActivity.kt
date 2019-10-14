@@ -11,17 +11,11 @@ class CallbackActivity: AppCompatActivity() {
         setContentView(R.layout.activity_callback_server)
         back()
         attInfo()
-        del()
     }
 
     fun back(){
         btn_callback_back.setOnClickListener {
             finish()
-        }
-    }
-    fun del(){
-        btn_callback_convert.setOnClickListener{
-            SharedPreference(this).clear()
         }
     }
 

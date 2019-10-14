@@ -10,7 +10,7 @@
     <Button
             android:id="@+id/btn_recycler"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:layout_width="0dp"
+            android:layout_width="91dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -21,10 +21,11 @@
     <Button
             android:id="@+id/btn_request"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:layout_width="wrap_content"
+            android:layout_width="69dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Perfil"
+            app:layout_constraintEnd_toStartOf="@+id/btn_options"
             app:layout_constraintStart_toEndOf="@+id/btn_recycler"
             app:layout_constraintTop_toTopOf="@+id/btn_recycler" />
 
@@ -83,13 +84,12 @@
             app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
     <Button
-            android:id="@+id/btn_save"
+            android:id="@+id/btn_options"
             style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Salvar perfil"
-            app:layout_constraintStart_toEndOf="@+id/btn_request"
+            android:text="Opções"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="@+id/btn_recycler" />
 
 </android.support.constraint.ConstraintLayout>

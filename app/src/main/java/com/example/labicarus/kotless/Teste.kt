@@ -20,5 +20,19 @@ data class Teste (
     @field:SerializedName("email")
     @Expose
     val email: String? = null
+)
 
+data class idToken(
+
+    @field:SerializedName("_id")
+    @Expose
+    val _id: String? = null
+
+)
+
+data class userToken(
+
+    @field:SerializedName("user")
+    @Expose
+    val user: String? = null
 )

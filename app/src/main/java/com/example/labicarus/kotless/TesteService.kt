@@ -7,12 +7,15 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface TesteService {
+
     @GET("loginService")
-    @Headers("Content-Type: application/json")
     fun getList(): Call<JsonElement>
 
     @GET("loginService")
     fun getListId(@Query("username") username: String?): Call<JsonElement>
+
+    @GET("tokenService")
+    fun getListIDSecuryted(@Query("token") token: String): Call<JsonElement>
 
     @POST("loginService")
     @Headers("Content-Type: application/json")
@@ -27,4 +30,5 @@ interface TesteService {
                @Field("username")username: String?,
                @Field("email")email: String?,
                @Field("password")password: String?): Call<JsonElement>
+
 }

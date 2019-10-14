@@ -27,12 +27,7 @@ class LoginActivity: AppCompatActivity() {
             var loading: Activity? = null
         }
     }
-
-    var fa: Activity = this
-
     var list: MutableList<Pessoa>? = mutableListOf()
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
@@ -42,18 +37,16 @@ class LoginActivity: AppCompatActivity() {
         back()
         teste()
     }
-
     fun back(){
         btn_login_back.setOnClickListener {
             finish()
         }
     }
-
     fun teste(){
         btn_login_enter.setOnClickListener {
             if (input_login_username.text.toString() != "" && input_login_password.text.toString() != ""){
                 val username =  input_login_username.text.toString()
-                val password = input_login_password.text.toString()
+                val password = CryptoClient().encode(input_login_password.text.toString() + username)
                 startActivity(Intent(this, SplashActivity::class.java))
                 TesteWebClient().getUser(username, password, list,this)
             }else{

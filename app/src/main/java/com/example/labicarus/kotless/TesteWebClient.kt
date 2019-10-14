@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -15,22 +14,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import com.airbnb.lottie.L.debug
 import com.google.gson.Gson
 import com.google.gson.JsonElement
-import kotlinx.android.synthetic.main.activity_recycler.*
-import kotlinx.android.synthetic.main.activity_recycler.view.*
 import kotlinx.android.synthetic.main.dialog.view.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class TesteWebClient {
-
     companion object{
         val usernames: MutableList<String>? = null
         val passwords: MutableList<String>? = null
@@ -40,10 +31,10 @@ class TesteWebClient {
         var userId: String = ""
         var usableUserId: String = ""
         var timeOut: Long = 1000
+        var token: String = ""
+        var permitted: Boolean = false
     }
-
     var json_getById = ""
-
     //----------------------------------RECYCLER CALL------------------------------//
     fun callbackRecycler(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView,context: Context ){
         val call = RetrofitInitializer().serverService().getList()
@@ -62,7 +53,6 @@ class TesteWebClient {
             }
         })
     }
-
     fun printView(response: JsonElement, list: MutableList<Pessoa>?){
         val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
@@ -71,7 +61,6 @@ class TesteWebClient {
             list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
         }
     }
-
     fun configureCardView(context: Activity, list: MutableList<Pessoa>?, recycler: RecyclerView){
         val pessoaAdapter = PessoaAdapter(context, list)
         recycler.adapter = pessoaAdapter
@@ -79,9 +68,7 @@ class TesteWebClient {
         recycler.smoothScrollToPosition(list!!.size)
         stopActivity()
     }
-
     //---------------------------------------- RECYCLER INSERT -----------------------------------------//
-
     fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, activity: Activity, recycler: RecyclerView, context: Context){
         val call = RetrofitInitializer().serverService().insert(pessoa)
         call.enqueue(object: Callback<JsonElement> {
@@ -97,7 +84,6 @@ class TesteWebClient {
 
         })
     }
-
     //----------------------------------------- TESTE GET COM ID --------------------------------------//
     fun getUser(username: String, password: String, list: MutableList<Pessoa>?,context: Context ){
         val call = RetrofitInitializer().serverService().getListId(username)
@@ -115,7 +101,6 @@ class TesteWebClient {
 
         })
     }
-
     fun getIdBack(response: JsonElement, list: MutableList<Pessoa>?, context: Context, password: String){
         val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
@@ -145,19 +130,16 @@ class TesteWebClient {
             Toast.makeText(context, "Usuario/Senha inválido", Toast.LENGTH_SHORT).show()
         }
     }
-
     private fun stopActivity(){
         val handler = Handler()
         handler.postDelayed({
             SplashActivity.SplashClass.activity!!.finish()
         }, timeOut)
     }
-
     fun logut(){
         user = ""
         TesteWebClient.login = false
     }
-
     //-------------------------------------- Delete query ---------------------------------------------------------//
     fun callbackIdToDelete(response: String,list: MutableList<Pessoa>, context: Context, activity: Activity, recycler: RecyclerView){
         val call = RetrofitInitializer().serverService().getListId(response)
@@ -173,7 +155,6 @@ class TesteWebClient {
             }
         })
     }
-
     fun getIdToDelete(response: JsonElement, list: MutableList<Pessoa>?, context: Context, activity: Activity, recycler: RecyclerView){
         val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
@@ -192,7 +173,6 @@ class TesteWebClient {
             Toast.makeText(context, "Usuario não existe", Toast.LENGTH_SHORT).show()
         }
     }
-
     fun delete(context: Context, list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
         val call = RetrofitInitializer().serverService().delete(usableUserId)
         call.enqueue(object: Callback<JsonElement>{
@@ -206,10 +186,7 @@ class TesteWebClient {
 
         })
     }
-
-
     //--------------------------- Teste PUT --------------------------------------------------------//
-
     fun getIdToUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String){
         val call = RetrofitInitializer().serverService().getListId(username)
         call.enqueue(object: Callback<JsonElement>{
@@ -225,7 +202,6 @@ class TesteWebClient {
             }
         })
     }
-
     fun checkUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String, response: JsonElement){
 
         val gson = Gson()
@@ -262,19 +238,17 @@ class TesteWebClient {
             Toast.makeText(context, "Usuario não existe", Toast.LENGTH_SHORT).show()
         }
     }
-
     fun callbackUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username: String, email: String, password: String, id: String){
 
         var _username: String? = ""
         var _email: String? = ""
-        var _password:String? = ""
+        var _password: String? = ""
 
         if (username == _username) _username = list!![0].username else _username = username
 
         if (email == _email) _email = list!![0].email else _email = email
 
-        if (password == _password) _password = list!![0].password else _password = password
-
+        if (password == _password) _password = CryptoClient().encode(list!![0].password.toString()+ _username) else _password = CryptoClient().encode(password + _username)
 
         val call = RetrofitInitializer().serverService().update(id, _username, _email, _password)
         call.enqueue(object: Callback<JsonElement>{
@@ -296,7 +270,6 @@ class TesteWebClient {
         })
     }
     //--------------------------- Teste PUT --------------------------------------------------------//
-
     fun callbackSplash(list: MutableList<String>?, password: MutableList<String>?){
         val call = RetrofitInitializer().serverService().getList()
         call.enqueue(object : Callback<JsonElement>{
@@ -317,16 +290,13 @@ class TesteWebClient {
             }
         })
     }
-
     //----------------------------------------------------------------------------------------------//
-
     fun saveInfo(context: Context){
         val sharedPreference = SharedPreference(context)
         sharedPreference.clear()
         sharedPreference.save("username", user)
-        Toast.makeText(context, "Nomes Salvos", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Perfil Salvo", Toast.LENGTH_SHORT).show()
     }
-
     fun retrieveInfo(context: Context, list: MutableList<Pessoa>?){
         val sharedPreference = SharedPreference(context)
         if (!login){
@@ -339,7 +309,6 @@ class TesteWebClient {
             }
         }
     }
-
     fun callbackInfo(string: String?, context: Context, list: MutableList<Pessoa>?){
         val call = RetrofitInitializer().serverService().getListId(string)
         call.enqueue(object: Callback<JsonElement>{
@@ -349,30 +318,25 @@ class TesteWebClient {
                     val gson = Gson()
                     val jsinho = gson.fromJson(info, Array<Teste>::class.java)
                     list?.clear()
-                    for(x in 0 until jsinho.size){
+                    for(x in jsinho.indices){
                         list!!.add(Pessoa(jsinho[x].username, jsinho[x].email, jsinho[x].password, jsinho[x]._id))
                     }
                     user = list!![0].username.toString()
-                    email = list!![0].email.toString()
+                    email = list[0].email.toString()
                     Toast.makeText(context, "Login automatico ativado", Toast.LENGTH_SHORT).show()
-
                     stopActivity()
-
                 }
             }
-
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                 stopActivityLogin(context)
                 Toast.makeText(context, "User não existe", Toast.LENGTH_SHORT).show()
             }
         })
     }
-
-
     private fun stopActivityLogin(context: Context){
         val handler = Handler()
         handler.postDelayed({
-            SplashActivity.SplashClass.activity!!.finish()
+            SplashActivity.SplashClass.activity.finish()
             startActivity(context, Intent(context, LoginActivity::class.java), Bundle())
         }, timeOut)
     }

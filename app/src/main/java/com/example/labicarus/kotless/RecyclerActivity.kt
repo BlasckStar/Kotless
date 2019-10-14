@@ -77,7 +77,7 @@ class RecyclerActivity : AppCompatActivity(){
                         //--------------------------- Data ------------------------//
                         val username = createdView.update_input_username.text.toString()
                         val email = createdView.input_email.text.toString()
-                        val password = createdView.input_password.text.toString()
+                        val password = CryptoClient().decoded(createdView.input_password.text.toString() + username)
                         val test = PessoaPost(username, email, password)
                         //--------------------------- Convert ---------------------//
                         val gson = Gson()
