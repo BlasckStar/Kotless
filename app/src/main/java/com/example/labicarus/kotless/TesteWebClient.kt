@@ -23,18 +23,14 @@ import retrofit2.Response
 
 class TesteWebClient {
     companion object{
-        val usernames: MutableList<String>? = null
-        val passwords: MutableList<String>? = null
         var login: Boolean = false
         var email: String? = null
         var user: String? = null
         var userId: String = ""
+        var userToken:String = ""
         var usableUserId: String = ""
         var timeOut: Long = 1000
-        var token: String = ""
-        var permitted: Boolean = false
     }
-    var json_getById = ""
     //----------------------------------RECYCLER CALL------------------------------//
     fun callbackRecycler(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView,context: Context ){
         val call = RetrofitInitializer().serverService().getList()
@@ -339,5 +335,30 @@ class TesteWebClient {
             SplashActivity.SplashClass.activity.finish()
             startActivity(context, Intent(context, LoginActivity::class.java), Bundle())
         }, timeOut)
+    }
+    //-----------------------------------------------------TESTES ----------------------------------//
+
+    fun testeToken(context: Context, _token: String, list: MutableList<TokenData>, ulist: MutableList<UserData>){
+        val call = RetrofitInitializer().serverService().getListIDSecuryted(_token)
+        call.enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body().let{
+                    val info = it
+                    val gson = Gson()
+                    val jsinho = gson.fromJson(info, Array<IdToken>::class.java)
+                    for (x in jsinho.indices){
+                        ulist.clear()
+                        for(y in jsinho[x].users.indices) {
+                            ulist.add(UserData(jsinho[x].users[y].toString()))
+                        }
+                        list.add(TokenData(jsinho[x]._id.toString(),jsinho[x].token.toString(), ulist))
+                    }
+                    Toast.makeText(context, list.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+
+            }
+        })
     }
 }

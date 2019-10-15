@@ -17,6 +17,9 @@ interface TesteService {
     @GET("tokenService")
     fun getListIDSecuryted(@Query("token") token: String): Call<JsonElement>
 
+    @GET("tokenService")
+    fun getListToken(): Call<JsonElement>
+
     @POST("loginService")
     @Headers("Content-Type: application/json")
     fun insert(@Body pessoa: JsonElement): Call<JsonElement>

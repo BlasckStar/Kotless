@@ -11,8 +11,12 @@ data class PessoaPost(var username: String?,
 
 data class login(var username: String?)
 
-data class token(
+data class TokenData(
+    var _id: String,
     var token: String,
-    var users: MutableList<String>,
-    var user: String
+    var users: MutableList<UserData>
+)
+
+data class UserData(
+    var user:String? = null
 )

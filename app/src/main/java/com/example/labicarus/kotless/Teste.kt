@@ -22,17 +22,28 @@ data class Teste (
     val email: String? = null
 )
 
-data class idToken(
+data class IdToken(
 
     @field:SerializedName("_id")
     @Expose
-    val _id: String? = null
+    val _id: String? = null,
 
+    @field:SerializedName("token")
+    @Expose
+    val token: String? = null,
+
+    @field:SerializedName("users")
+    @Expose
+    val users: MutableList<UserToken> = mutableListOf()
 )
 
-data class userToken(
+data class UserToken(
+
+    @field:SerializedName("_id")
+    @Expose
+    val _id: String? = null,
 
     @field:SerializedName("user")
     @Expose
     val user: String? = null
-)
+)//

@@ -3,6 +3,7 @@ package com.example.labicarus.kotless
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.os.Handler
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
 
     var userinfo: MutableList<Pessoa>? = mutableListOf()
+    var tokenInfo: MutableList<TokenData> = mutableListOf()
+    var usersInfo: MutableList<UserData> = mutableListOf()
     var list:MutableList<String>? = null
     var plist:MutableList<String>? = null
 
@@ -35,10 +38,24 @@ class MainActivity : AppCompatActivity() {
         }
         hand()
         TesteWebClient().callbackSplash(list, plist)
+        TesteWebClient().testeToken(this, "primeiro", tokenInfo, usersInfo)
         logout()
         recycler()
         server()
         options()
+    }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
+            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages ->
+                val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
+
+                // Process the messages array.
+
+                Toast.makeText(this, messages.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
     fun recycler(){
         btn_recycler.setOnClickListener {
@@ -85,6 +102,8 @@ class MainActivity : AppCompatActivity() {
                 }else{
                    btn_logout.text = "Sair"
                 }
+
+                txt_results.text = tokenInfo.toString()
                 handler.postDelayed(this, 1000)
             }
         })
@@ -102,6 +121,9 @@ class MainActivity : AppCompatActivity() {
 
     fun nfc(context: Context){
         var NfcAdapter = NfcAdapter.getDefaultAdapter(this)
+    }
 
+    fun teste(){
+        txt_results.text = tokenInfo.toString()
     }
 }
