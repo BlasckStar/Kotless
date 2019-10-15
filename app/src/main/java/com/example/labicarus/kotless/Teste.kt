@@ -13,6 +13,21 @@ data class Teste (
     @Expose
     val username: String? = null,
 
+    @field:SerializedName("email")
+    @Expose
+    val email: String? = null
+)
+
+data class UsersData (
+
+    @field:SerializedName("_id")
+    @Expose
+    val _id: String? = null,
+
+    @field:SerializedName("username")
+    @Expose
+    val username: String? = null,
+
     @field:SerializedName("password")
     @Expose
     val password: String? = null,

@@ -20,3 +20,11 @@ data class TokenData(
 data class UserData(
     var user:String? = null
 )
+
+data class UserInfo(
+    var name: String? = null,
+    var email: String? = null,
+    var hierarchy: String? = null,
+    var password: String? = null,
+    var description: String? = null
+)
