@@ -22,9 +22,9 @@ data class UserData(
 )
 
 data class UserInfo(
+    var _id: String = "",
     var name: String? = null,
     var email: String? = null,
     var hierarchy: String? = null,
-    var password: String? = null,
     var description: String? = null
 )

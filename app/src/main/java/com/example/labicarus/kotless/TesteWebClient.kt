@@ -27,14 +27,16 @@ class TesteWebClient {
         var email: String? = null
         var user: String? = null
         var userId: String = ""
-        var userToken:String = ""
+        var userToken:String = "primeiro"
         var usableUserId: String = ""
         var timeOut: Long = 1000
+        val call = RetrofitInitializer().serverService()
+        val gson = Gson()
     }
     //----------------------------------RECYCLER CALL------------------------------//
-    fun callbackRecycler(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView,context: Context ){
-        val call = RetrofitInitializer().serverService().getList()
-        call.enqueue(object: Callback<JsonElement>{
+    fun callbackRecycler(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
+
+        call.getList().enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>?,
                                     response: Response<JsonElement>?) {
                 response?.body()?.let{
@@ -50,7 +52,6 @@ class TesteWebClient {
         })
     }
     fun printView(response: JsonElement, list: MutableList<Pessoa>?){
-        val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
         list?.clear()
         for (x in info.indices){
@@ -65,25 +66,23 @@ class TesteWebClient {
         stopActivity()
     }
     //---------------------------------------- RECYCLER INSERT -----------------------------------------//
-    fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, activity: Activity, recycler: RecyclerView, context: Context){
-        val call = RetrofitInitializer().serverService().insert(pessoa)
-        call.enqueue(object: Callback<JsonElement> {
+    fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, activity: Activity, recycler: RecyclerView){
+        call.insert(pessoa).enqueue(object: Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
                 stopActivity()
                 Log.e("On Failure error", t?.message)
             }
 
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                callbackRecycler(list, activity, recycler, context)
+                callbackRecycler(list, activity, recycler)
             }
 
 
         })
     }
     //----------------------------------------- TESTE GET COM ID --------------------------------------//
-    fun getUser(username: String, password: String, list: MutableList<Pessoa>?,context: Context ){
-        val call = RetrofitInitializer().serverService().getListId(username)
-        call.enqueue(object: Callback<JsonElement>{
+    fun getUser(username: String, password: String, list: MutableList<Pessoa>?,context: Context){
+        call.getListId(username).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -98,7 +97,6 @@ class TesteWebClient {
         })
     }
     fun getIdBack(response: JsonElement, list: MutableList<Pessoa>?, context: Context, password: String){
-        val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
         for (x in info.indices){
             list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
@@ -129,7 +127,7 @@ class TesteWebClient {
     private fun stopActivity(){
         val handler = Handler()
         handler.postDelayed({
-            SplashActivity.SplashClass.activity!!.finish()
+            SplashActivity.SplashClass.activity.finish()
         }, timeOut)
     }
     fun logut(){
@@ -138,8 +136,7 @@ class TesteWebClient {
     }
     //-------------------------------------- Delete query ---------------------------------------------------------//
     fun callbackIdToDelete(response: String,list: MutableList<Pessoa>, context: Context, activity: Activity, recycler: RecyclerView){
-        val call = RetrofitInitializer().serverService().getListId(response)
-        call.enqueue(object : Callback<JsonElement>{
+        call.getListId(response).enqueue(object : Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -152,7 +149,6 @@ class TesteWebClient {
         })
     }
     fun getIdToDelete(response: JsonElement, list: MutableList<Pessoa>?, context: Context, activity: Activity, recycler: RecyclerView){
-        val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
         for (x in info.indices){
             list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
@@ -170,11 +166,10 @@ class TesteWebClient {
         }
     }
     fun delete(context: Context, list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
-        val call = RetrofitInitializer().serverService().delete(usableUserId)
-        call.enqueue(object: Callback<JsonElement>{
+            call.delete(usableUserId).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 Toast.makeText(context, "Usuario deletado", Toast.LENGTH_SHORT).show()
-                callbackRecycler(list, activity, recycler, context)
+                callbackRecycler(list, activity, recycler)
             }
             override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
                 Toast.makeText(context,"Erro", Toast.LENGTH_SHORT).show()
@@ -184,8 +179,7 @@ class TesteWebClient {
     }
     //--------------------------- Teste PUT --------------------------------------------------------//
     fun getIdToUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String){
-        val call = RetrofitInitializer().serverService().getListId(username)
-        call.enqueue(object: Callback<JsonElement>{
+        call.getListId(username).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -199,8 +193,6 @@ class TesteWebClient {
         })
     }
     fun checkUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String, response: JsonElement){
-
-        val gson = Gson()
         val info = gson.fromJson(response, Array<Teste>::class.java)
         list!!.clear()
         for (x in info.indices){
@@ -246,15 +238,14 @@ class TesteWebClient {
 
         if (password == _password) _password = CryptoClient().encode(list!![0].password.toString()+ _username) else _password = CryptoClient().encode(password + _username)
 
-        val call = RetrofitInitializer().serverService().update(id, _username, _email, _password)
-        call.enqueue(object: Callback<JsonElement>{
+        call.update(id, _username, _email, _password).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
                     if(info.toString() != ""){
                         stopActivity()
                         Toast.makeText(context, "Update complete", Toast.LENGTH_SHORT).show()
-                        callbackRecycler(list, activity, recycler, context)
+                        callbackRecycler(list, activity, recycler)
                     }
                 }
             }
@@ -267,12 +258,10 @@ class TesteWebClient {
     }
     //--------------------------- Teste PUT --------------------------------------------------------//
     fun callbackSplash(list: MutableList<String>?, password: MutableList<String>?){
-        val call = RetrofitInitializer().serverService().getList()
-        call.enqueue(object : Callback<JsonElement>{
+        call.getList().enqueue(object : Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
-                    val gson = Gson()
                     val jsinho = gson.fromJson(info, Array<Teste>::class.java)
                     for (x in jsinho.indices){
                         list?.add(jsinho[x].username.toString())
@@ -337,14 +326,12 @@ class TesteWebClient {
         }, timeOut)
     }
     //-----------------------------------------------------TESTES ----------------------------------//
-
-    fun testeToken(context: Context, _token: String, list: MutableList<TokenData>, ulist: MutableList<UserData>){
-        val call = RetrofitInitializer().serverService().getListIDSecuryted(_token)
-        call.enqueue(object: Callback<JsonElement>{
+    fun testeToken(context: Context, _token: String, list: MutableList<TokenData>){
+        call.getListIDSecuryted(_token).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body().let{
                     val info = it
-                    val gson = Gson()
+                    val ulist: MutableList<UserData> = mutableListOf()
                     val jsinho = gson.fromJson(info, Array<IdToken>::class.java)
                     for (x in jsinho.indices){
                         ulist.clear()
@@ -359,6 +346,51 @@ class TesteWebClient {
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
 
             }
+        })
+    }
+    fun callbackToken(context: Context, list:MutableList<IdToken>){
+        call.getListToken().enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let{
+                    val info = it
+                    val listin: MutableList<UserToken> = mutableListOf()
+                    val jsonTokens = gson.fromJson(info, Array<IdToken>::class.java)
+                    for (x in jsonTokens.indices) {
+                        for(y in jsonTokens[x].users.indices){
+                            listin.add(UserToken(jsonTokens[x].users[y]._id, jsonTokens[x].users[y].user))
+                        }
+                        list.add(IdToken(jsonTokens[x]._id.toString(), jsonTokens[x].token, listin))
+                    }
+                }
+            }
+
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
+                Toast.makeText(context, t?.message, Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+    //-------------------------------------- VERIFICATION REQUEST ----------------------------------//
+    fun callbackRecycerVerification(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
+        call.getListIDSecuryted(userToken).enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let{
+                    val info = it
+                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    if (jsonToken.size == 1) {
+                        for(x in jsonToken[0].users.indices){
+                            if (jsonToken[0].users[x].user == user){
+                                callbackRecycler(list, activity, recycler)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+            }
+
         })
     }
 }

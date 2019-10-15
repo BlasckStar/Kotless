@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     var userinfo: MutableList<Pessoa>? = mutableListOf()
     var tokenInfo: MutableList<TokenData> = mutableListOf()
-    var usersInfo: MutableList<UserData> = mutableListOf()
     var list:MutableList<String>? = null
     var plist:MutableList<String>? = null
 
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         }
         hand()
         TesteWebClient().callbackSplash(list, plist)
-        TesteWebClient().testeToken(this, "primeiro", tokenInfo, usersInfo)
+        TesteWebClient().testeToken(this, "primeiro", tokenInfo)
         logout()
         recycler()
         server()

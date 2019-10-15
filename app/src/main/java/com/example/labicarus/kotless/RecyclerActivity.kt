@@ -28,8 +28,7 @@ class RecyclerActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler)
 
-        TesteWebClient().callbackRecycler(pessoaList, this, recyclerViewPessoas, this)
-
+        TesteWebClient().callbackRecycerVerification(pessoaList, this, recyclerViewPessoas)
         configureCardView()
 
         dialog(this, this)
@@ -83,7 +82,7 @@ class RecyclerActivity : AppCompatActivity(){
                         val gson = Gson()
                         val jsinho = gson.toJsonTree(test)
                         startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
-                        TesteWebClient().insert(jsinho, pessoaList, activity, recyclerViewPessoas, context)
+                        TesteWebClient().insert(jsinho, pessoaList, activity, recyclerViewPessoas)
                     }
                 })
                 .show()
