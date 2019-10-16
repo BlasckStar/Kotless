@@ -22,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class TesteWebClient {
+
     companion object{
         var login: Boolean = false
         var email: String? = null
@@ -32,11 +33,13 @@ class TesteWebClient {
         var timeOut: Long = 1000
         val call = RetrofitInitializer().serverService()
         val gson = Gson()
+        var description: String? = null
     }
-    //----------------------------------RECYCLER CALL------------------------------//
-    fun callbackRecycler(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
 
-        call.getList().enqueue(object: Callback<JsonElement>{
+    // region //----- RECYCLER REQUESTS -----\\
+    fun callbackRecycler(list: MutableList<Employees>?, activity: Activity, recycler: RecyclerView){
+
+        call.searchEmployees().enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>?,
                                     response: Response<JsonElement>?) {
                 response?.body()?.let{
@@ -51,38 +54,45 @@ class TesteWebClient {
             }
         })
     }
-    fun printView(response: JsonElement, list: MutableList<Pessoa>?){
-        val info = gson.fromJson(response, Array<Teste>::class.java)
+
+    fun printView(response: JsonElement, list: MutableList<Employees>?){
+        val info = gson.fromJson(response, Array<Employees>::class.java)
         list?.clear()
         for (x in info.indices){
-            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+            list!!.add(Employees(info[x]._id, info[x].name, info[x].email, info[x].hierarchy, info[x].description))
         }
     }
-    fun configureCardView(context: Activity, list: MutableList<Pessoa>?, recycler: RecyclerView){
+
+    fun configureCardView(context: Activity, list: MutableList<Employees>?, recycler: RecyclerView){
         val pessoaAdapter = PessoaAdapter(context, list)
         recycler.adapter = pessoaAdapter
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.smoothScrollToPosition(list!!.size)
         stopActivity()
     }
-    //---------------------------------------- RECYCLER INSERT -----------------------------------------//
-    fun insert(pessoa: JsonElement, list: MutableList<Pessoa>, activity: Activity, recycler: RecyclerView){
-        call.insert(pessoa).enqueue(object: Callback<JsonElement> {
+    //endregion
+
+    // region //----- REGISTER REQUESTS -----\\
+    fun insert(json: JsonElement, list: MutableList<Employees>, activity: Activity, recycler: RecyclerView){
+        call.registerEmployee(json).enqueue(object: Callback<JsonElement> {
             override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
                 stopActivity()
                 Log.e("On Failure error", t?.message)
             }
 
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
+
                 callbackRecycler(list, activity, recycler)
             }
 
 
         })
     }
-    //----------------------------------------- TESTE GET COM ID --------------------------------------//
-    fun getUser(username: String, password: String, list: MutableList<Pessoa>?,context: Context){
-        call.getListId(username).enqueue(object: Callback<JsonElement>{
+    //endregion
+
+    // region //----- LOGIN REQUESTS -----\\
+    fun getUser(username: String, password: String, list: MutableList<Employees>?,context: Context){
+        call.searchEmployee(username).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -96,10 +106,10 @@ class TesteWebClient {
 
         })
     }
-    fun getIdBack(response: JsonElement, list: MutableList<Pessoa>?, context: Context, password: String){
-        val info = gson.fromJson(response, Array<Teste>::class.java)
+    fun getIdBack(response: JsonElement, list: MutableList<Employees>?, context: Context, password: String){
+        val info = gson.fromJson(response, Array<Employees>::class.java)
         for (x in info.indices){
-            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+            list!!.add(Employees(info[x]._id, info[x].name, info[x].email, info[x].hierarchy, info[x].password, info[x].description))
         }
         if(info.size > 1){
             stopActivity()
@@ -108,15 +118,15 @@ class TesteWebClient {
         if (info.size == 1){
             if(info[0].password == password){
                 login = true
-                user = info[0].username.toString()
+                user = info[0].name.toString()
                 userId = info[0]._id.toString()
                 email = info[0].email.toString()
-                Toast.makeText(context, "Ola,$user", Toast.LENGTH_SHORT).show()
-                stopActivity()
-                LoginActivity.LoginClass.activity?.finish()
+                description = info[0].description.toString()
+
+                callbackLoginVerification(context)
             }else{
+                Toast.makeText(context, "Usuario/Senha invalido", Toast.LENGTH_SHORT).show()
                 stopActivity()
-                Toast.makeText(context, "Usuario/Senha inválido", Toast.LENGTH_SHORT).show()
             }
         }
         if(info.isEmpty()){
@@ -132,11 +142,14 @@ class TesteWebClient {
     }
     fun logut(){
         user = ""
+        userToken = ""
         TesteWebClient.login = false
     }
-    //-------------------------------------- Delete query ---------------------------------------------------------//
-    fun callbackIdToDelete(response: String,list: MutableList<Pessoa>, context: Context, activity: Activity, recycler: RecyclerView){
-        call.getListId(response).enqueue(object : Callback<JsonElement>{
+    //endregion
+
+    // region //----- DELETE REQUESTS -----\\
+    fun callbackIdToDelete(response: String,list: MutableList<Employees>, context: Context, activity: Activity, recycler: RecyclerView){
+        call.searchEmployee(response).enqueue(object : Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -148,10 +161,10 @@ class TesteWebClient {
             }
         })
     }
-    fun getIdToDelete(response: JsonElement, list: MutableList<Pessoa>?, context: Context, activity: Activity, recycler: RecyclerView){
-        val info = gson.fromJson(response, Array<Teste>::class.java)
+    fun getIdToDelete(response: JsonElement, list: MutableList<Employees>?, context: Context, activity: Activity, recycler: RecyclerView){
+        val info = gson.fromJson(response, Array<Employees>::class.java)
         for (x in info.indices){
-            list!!.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+            list!!.add(Employees(info[x]._id, info[x].name, info[x].email, info[x].hierarchy, info[x].description))
         }
         if(info.size > 1){
             Toast.makeText(context, "Mais de um usuario", Toast.LENGTH_SHORT).show()
@@ -165,8 +178,8 @@ class TesteWebClient {
             Toast.makeText(context, "Usuario não existe", Toast.LENGTH_SHORT).show()
         }
     }
-    fun delete(context: Context, list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
-            call.delete(usableUserId).enqueue(object: Callback<JsonElement>{
+    fun delete(context: Context, list: MutableList<Employees>?, activity: Activity, recycler: RecyclerView){
+            call.deleteEmployee(usableUserId).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 Toast.makeText(context, "Usuario deletado", Toast.LENGTH_SHORT).show()
                 callbackRecycler(list, activity, recycler)
@@ -177,9 +190,11 @@ class TesteWebClient {
 
         })
     }
-    //--------------------------- Teste PUT --------------------------------------------------------//
-    fun getIdToUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String){
-        call.getListId(username).enqueue(object: Callback<JsonElement>{
+    //endregion
+
+    // region //----- UPDATE REQUESTS -----\\
+    fun getIdToUpdate(activity: Activity, context: Context, list: MutableList<Employees>?, recycler: RecyclerView, username:String){
+        call.searchEmployee(username).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -192,11 +207,11 @@ class TesteWebClient {
             }
         })
     }
-    fun checkUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username:String, response: JsonElement){
-        val info = gson.fromJson(response, Array<Teste>::class.java)
+    fun checkUpdate(activity: Activity, context: Context, list: MutableList<Employees>?, recycler: RecyclerView, username:String, response: JsonElement){
+        val info = gson.fromJson(response, Array<Employees>::class.java)
         list!!.clear()
         for (x in info.indices){
-            list.add(Pessoa(info[x].username, info[x].email, info[x].password, info[x]._id))
+            list.add(Employees(info[x]._id, info[x].name, info[x].email, info[x].hierarchy, info[x].password, info[x].description))
         }
         if(info.size > 1){
             Toast.makeText(context, "Mais de um usuario", Toast.LENGTH_SHORT).show()
@@ -216,8 +231,9 @@ class TesteWebClient {
                         val mUsername = createdView.update_input_username.text.toString()
                         val mEmail = createdView.input_email.text.toString()
                         val mPassword = createdView.input_password.text.toString()
+                        val mDescription = createdView.input_dialog_description.text.toString()
                         startActivity(context, Intent(context, SplashActivity::class.java), Bundle())
-                        callbackUpdate(activity, context, list, recycler, mUsername, mEmail, mPassword, info[0]._id.toString())
+                        callbackUpdate(activity, context, list, recycler, mUsername, mEmail, mPassword, info[0]._id.toString(), info[0].hierarchy.toString(), mDescription)
                     }
                 })
                 .show()
@@ -226,19 +242,25 @@ class TesteWebClient {
             Toast.makeText(context, "Usuario não existe", Toast.LENGTH_SHORT).show()
         }
     }
-    fun callbackUpdate(activity: Activity, context: Context, list: MutableList<Pessoa>?, recycler: RecyclerView, username: String, email: String, password: String, id: String){
+    fun callbackUpdate(activity: Activity, context: Context, list: MutableList<Employees>?, recycler: RecyclerView, username: String, email: String, password: String, id: String, hierarchy: String, description: String){
 
         var _username: String? = ""
         var _email: String? = ""
         var _password: String? = ""
+        var _description: String? = ""
+        var _hierarchy: String? = ""
 
-        if (username == _username) _username = list!![0].username else _username = username
+        if (username == _username) _username = list!![0].name else _username = username
 
         if (email == _email) _email = list!![0].email else _email = email
 
         if (password == _password) _password = CryptoClient().encode(list!![0].password.toString()+ _username) else _password = CryptoClient().encode(password + _username)
 
-        call.update(id, _username, _email, _password).enqueue(object: Callback<JsonElement>{
+        if (hierarchy == _hierarchy) _hierarchy = list!![0].hierarchy else _hierarchy = hierarchy
+
+        if (description == _description) _description = list!![0].description else _description = description
+
+        call.updateEmployees(id, _username, _email, _password, _hierarchy, _description).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -256,26 +278,9 @@ class TesteWebClient {
 
         })
     }
-    //--------------------------- Teste PUT --------------------------------------------------------//
-    fun callbackSplash(list: MutableList<String>?, password: MutableList<String>?){
-        call.getList().enqueue(object : Callback<JsonElement>{
-            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
-                response?.body()?.let{
-                    val info = it
-                    val jsinho = gson.fromJson(info, Array<Teste>::class.java)
-                    for (x in jsinho.indices){
-                        list?.add(jsinho[x].username.toString())
-                        password?.add(jsinho[x].password.toString())
-                    }
-                }
-            }
+    //endregion
 
-            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-
-            }
-        })
-    }
-    //----------------------------------------------------------------------------------------------//
+    // region //----- Shared Preferences -----\\
     fun saveInfo(context: Context){
         val sharedPreference = SharedPreference(context)
         sharedPreference.clear()
@@ -325,9 +330,11 @@ class TesteWebClient {
             startActivity(context, Intent(context, LoginActivity::class.java), Bundle())
         }, timeOut)
     }
-    //-----------------------------------------------------TESTES ----------------------------------//
+    //endregion
+
+    // region //----- TOKENS -----\\
     fun testeToken(context: Context, _token: String, list: MutableList<TokenData>){
-        call.getListIDSecuryted(_token).enqueue(object: Callback<JsonElement>{
+        call.searchEmployeeToken(_token).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body().let{
                     val info = it
@@ -349,7 +356,7 @@ class TesteWebClient {
         })
     }
     fun callbackToken(context: Context, list:MutableList<IdToken>){
-        call.getListToken().enqueue(object: Callback<JsonElement>{
+        call.searchTokens().enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -371,9 +378,11 @@ class TesteWebClient {
 
         })
     }
-    //-------------------------------------- VERIFICATION REQUEST ----------------------------------//
-    fun callbackRecycerVerification(list: MutableList<Pessoa>?, activity: Activity, recycler: RecyclerView){
-        call.getListIDSecuryted(userToken).enqueue(object: Callback<JsonElement>{
+    //endregion
+
+    // region //----- VERIFICATION REQUESTS -----\\
+    fun callbackRecyclerVerification(list: MutableList<Employees>?, activity: Activity, recycler: RecyclerView){
+        call.searchEmployeeToken(userToken).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
@@ -393,4 +402,110 @@ class TesteWebClient {
 
         })
     }
+    fun callbackInsertVerification(user: JsonElement, list: MutableList<Employees>, activity: Activity, recycler: RecyclerView){
+        call.searchEmployeeToken(userToken).enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let {
+                    val info = it
+                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    if (jsonToken.size == 1) {
+                        for (x in jsonToken[0].users.indices) {
+                            if (jsonToken[0].users[x].user == Companion.user) {
+                                insert(user, list, activity, recycler)
+                            }
+                        }
+                    }
+                }
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
+                print(t?.message)
+            }
+
+        })
+
+    }
+    fun callbackDeleteVerification(_response: String, list: MutableList<Employees>, context: Context, activity: Activity, recycler: RecyclerView){
+        call.searchEmployeeToken(userToken).enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let {
+                    val info = it
+                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    if (jsonToken.size == 1) {
+                        for (x in jsonToken[0].users.indices) {
+                            if (jsonToken[0].users[x].user == Companion.user) {
+                                callbackIdToDelete(_response, list, context, activity, recycler)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
+                stopActivity()
+                print(t?.message)
+            }
+
+        })
+    }
+    fun callbackUpdateVerification(activity: Activity, context: Context, list: MutableList<Employees>?, recycler: RecyclerView, username: String){
+        call.searchEmployeeToken(userToken).enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let {
+                    val info = it
+                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    if (jsonToken.size == 1) {
+                        for (x in jsonToken[0].users.indices) {
+                            if (jsonToken[0].users[x].user == Companion.user) {
+                                getIdToUpdate(activity, context, list, recycler, username)
+                            }
+                        }
+                    }
+                }
+            }
+            override fun onFailure(call: Call<JsonElement>, t: Throwable?) {
+                print(t?.message)
+            }
+        })
+    }
+    fun callbackLoginVerification(context: Context){
+        userToken = ""
+        call.searchTokens().enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body()?.let {
+                    val info = it
+                    val jsonResponse = gson.fromJson(info, Array<IdToken>::class.java)
+                    for (x in jsonResponse.indices) {
+                        for(y in jsonResponse[x].users.indices){
+                            if(jsonResponse[x].users[y].user == user){
+                                userToken = jsonResponse[x].token.toString()
+                                Toast.makeText(context, "Ola,$user", Toast.LENGTH_SHORT).show()
+                                stopActivity()
+                                LoginActivity.LoginClass.activity?.finish()
+                            }
+                        }
+                        if(userToken != "" && x.toString() == jsonResponse.indices.toString()){
+                            Toast.makeText(context, "Ola, $user você não possui permissões", Toast.LENGTH_SHORT).show()
+                            stopActivity()
+                            LoginActivity.LoginClass.activity?.finish()
+
+                            Toast.makeText(context, userToken, Toast.LENGTH_SHORT).show()
+                        }else{
+                            stopActivity()
+                            LoginActivity.LoginClass.activity?.finish()
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+
+                Toast.makeText(context, "Usuario sem licensa", Toast.LENGTH_SHORT).show()
+                stopActivity()
+                LoginActivity.LoginClass.activity?.finish()
+            }
+
+        })
+    }
+    //endregion
+
 }

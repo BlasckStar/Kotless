@@ -65,4 +65,4 @@ data class UserToken(
     @field:SerializedName("user")
     @Expose
     val user: String? = null
-)//
+)

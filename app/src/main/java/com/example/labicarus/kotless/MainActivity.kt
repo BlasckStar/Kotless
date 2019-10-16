@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
             TesteWebClient().retrieveInfo(this, userinfo)
         }
         hand()
-        TesteWebClient().callbackSplash(list, plist)
         TesteWebClient().testeToken(this, "primeiro", tokenInfo)
         logout()
         recycler()
@@ -58,11 +57,11 @@ class MainActivity : AppCompatActivity() {
     }
     fun recycler(){
         btn_recycler.setOnClickListener {
-            if(TesteWebClient.login){
+            if(TesteWebClient.userToken != ""){
                 val intent = Intent(this, RecyclerActivity::class.java)
                 startActivity(intent)
             }else{
-                Toast.makeText(this, "Efetue o login!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Você não tem permissão", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -91,11 +90,9 @@ class MainActivity : AppCompatActivity() {
                 if(TesteWebClient.user != "" && TesteWebClient.user != text_user.text){
                     text_user.text = TesteWebClient.user
                 }
-
                 if(TesteWebClient.user == ""){
                     text_user.text = "Logue por favor"
                 }
-
                 if(!TesteWebClient.login){
                     btn_logout.text = "Entrar"
                 }else{
@@ -114,7 +111,11 @@ class MainActivity : AppCompatActivity() {
     }
     fun options(){
         btn_options.setOnClickListener{
-            startActivity(Intent(this, OptionsActivity::class.java))
+            if(TesteWebClient.userToken != ""){
+                startActivity(Intent(this, OptionsActivity::class.java))
+            }else{
+                Toast.makeText(this, "Você não tem permissão", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

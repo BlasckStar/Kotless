@@ -22,5 +22,6 @@ class CallbackActivity: AppCompatActivity() {
     fun attInfo(){
         recycler_txt_name.text = TesteWebClient.user
         recycler_text_email.text = TesteWebClient.email
+        recycler_text_description.text = TesteWebClient.description
     }
 }

@@ -19,18 +19,16 @@ import kotlinx.android.synthetic.main.dialog.view.*
 
 class RecyclerActivity : AppCompatActivity(){
 
-    val pessoaList: MutableList<Pessoa> = mutableListOf()
-    val list: MutableList<Pessoa> = mutableListOf()
+    val pessoaList: MutableList<Employees> = mutableListOf()
+    val list: MutableList<Employees> = mutableListOf()
 
     lateinit var pessoaAdapter: PessoaAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler)
-
-        TesteWebClient().callbackRecycerVerification(pessoaList, this, recyclerViewPessoas)
+        TesteWebClient().callbackRecyclerVerification(pessoaList, this, recyclerViewPessoas)
         configureCardView()
-
         dialog(this, this)
         deleteDialog(this, this)
         updateDialog(this, this)
@@ -54,14 +52,12 @@ class RecyclerActivity : AppCompatActivity(){
             else -> super.onOptionsItemSelected(item)
         }
     }
-
     fun configureCardView(){
         pessoaAdapter = PessoaAdapter(this, pessoaList)
         recyclerViewPessoas.adapter = pessoaAdapter
         recyclerViewPessoas.layoutManager = LinearLayoutManager(this)
         recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
     }
-
     fun dialog(activity: Activity, context: Context){
 
         Fab.setOnClickListener {
@@ -77,18 +73,18 @@ class RecyclerActivity : AppCompatActivity(){
                         val username = createdView.update_input_username.text.toString()
                         val email = createdView.input_email.text.toString()
                         val password = CryptoClient().decoded(createdView.input_password.text.toString() + username)
-                        val test = PessoaPost(username, email, password)
+                        val description = createdView.input_dialog_description.text.toString()
+                        val test = EmployeePost(username, email, "Usuario", password, description)
                         //--------------------------- Convert ---------------------//
                         val gson = Gson()
                         val jsinho = gson.toJsonTree(test)
                         startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
-                        TesteWebClient().insert(jsinho, pessoaList, activity, recyclerViewPessoas)
+                        TesteWebClient().callbackInsertVerification(jsinho, pessoaList, activity, recyclerViewPessoas)
                     }
                 })
                 .show()
         }
     }
-
     fun deleteDialog(activity: Activity, context: Context){
         btn_recycler_delete.setOnClickListener{
             Toast.makeText(context, "Não funcionou", Toast.LENGTH_SHORT).show()
@@ -104,13 +100,12 @@ class RecyclerActivity : AppCompatActivity(){
                         //--------------------------- Data ------------------------//
                         val username = createdView.update_input_username.text.toString()
                         startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
-                        TesteWebClient().callbackIdToDelete(username, list, context, this@RecyclerActivity, recyclerViewPessoas)
+                        TesteWebClient().callbackDeleteVerification(username, list, context, this@RecyclerActivity, recyclerViewPessoas)
                     }
                 })
                 .show()
         }
     }
-
     fun updateDialog(activity: Activity, context: Context){
         btn_recycler_update.setOnClickListener{
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.update_dialog,
@@ -124,11 +119,10 @@ class RecyclerActivity : AppCompatActivity(){
                         //--------------------------- Data ------------------------//
                         val username = createdView.update_input_username.text.toString()
                         startActivity(Intent(this@RecyclerActivity, SplashActivity::class.java))
-                        TesteWebClient().getIdToUpdate(this@RecyclerActivity, this@RecyclerActivity, list, recyclerViewPessoas,username)
+                        TesteWebClient().callbackUpdateVerification(this@RecyclerActivity, this@RecyclerActivity, list, recyclerViewPessoas,username)
                     }
                 })
                 .show()
         }
     }
-
 }

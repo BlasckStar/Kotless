@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.pessoa_item.view.*
 
-class PessoaAdapter(private val context: Context, private var pessoaList: MutableList<Pessoa>?):
+class PessoaAdapter(private val context: Context, private var pessoaList: MutableList<Employees>?):
     RecyclerView.Adapter<PessoaAdapter.PessoaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PessoaViewHolder {
@@ -23,14 +23,11 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
 
     class PessoaViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val textViewNome = itemView.textViewNome
-        val textViewEmail = itemView.textViewEmail
         val textViewTelefone = itemView.textViewTelefone
-        val btn = itemView.btn_flt_update
 
-        fun bindView(pessoa: Pessoa) {
-            textViewNome.text = pessoa.username
-            textViewEmail.text = pessoa.email
-            textViewTelefone.text = pessoa.password
+        fun bindView(pessoa: Employees) {
+            textViewNome.text = pessoa.name
+            textViewTelefone.text = pessoa.email
         }
     }
 }
