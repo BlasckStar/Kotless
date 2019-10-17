@@ -103,7 +103,6 @@ class TesteWebClient {
                 stopActivity()
                 Toast.makeText(context,"WTF",Toast.LENGTH_SHORT).show()
             }
-
         })
     }
     fun getIdBack(response: JsonElement, list: MutableList<Employees>?, context: Context, password: String){
@@ -483,7 +482,7 @@ class TesteWebClient {
                                 LoginActivity.LoginClass.activity?.finish()
                             }
                         }
-                        if(userToken != "" && x.toString() == jsonResponse.indices.toString()){
+                        if(userToken != " " && x.toString() == jsonResponse.indices.toString()){
                             Toast.makeText(context, "Ola, $user você não possui permissões", Toast.LENGTH_SHORT).show()
                             stopActivity()
                             LoginActivity.LoginClass.activity?.finish()
@@ -491,7 +490,10 @@ class TesteWebClient {
                             Toast.makeText(context, userToken, Toast.LENGTH_SHORT).show()
                         }else{
                             stopActivity()
-                            LoginActivity.LoginClass.activity?.finish()
+                            if(userToken == ""){
+                                Toast.makeText(context, "Olá, $user você não possui permissões", Toast.LENGTH_SHORT).show()
+                                LoginActivity.LoginClass.activity?.finish()
+                            }
                         }
                     }
                 }

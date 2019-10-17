@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     var userinfo: MutableList<Employees>? = mutableListOf()
     var tokenInfo: MutableList<TokenData> = mutableListOf()
-    var list:MutableList<String>? = null
-    var plist:MutableList<String>? = null
 
     @SuppressLint("ShowToast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,12 +50,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun server(){
         btn_request.setOnClickListener {
             val intent = Intent(this, CallbackActivity::class.java)
             startActivity(intent)
         }
     }
+
     fun logout(){
         btn_logout.setOnClickListener {
             if (!TesteWebClient.login){
@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun hand(){
         val handler = Handler(Looper.getMainLooper())
         handler.post(object: Runnable{
@@ -91,11 +92,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
     fun initSwitch(){
         if (MainActivity.init){
             MainActivity.init = false
         }
     }
+
     fun options(){
         btn_options.setOnClickListener{
             if(TesteWebClient.userToken != ""){
@@ -106,11 +109,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun nfc(context: Context){
-        var NfcAdapter = NfcAdapter.getDefaultAdapter(this)
-    }
-
-    fun teste(){
-        txt_results.text = tokenInfo.toString()
-    }
 }

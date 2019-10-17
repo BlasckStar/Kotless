@@ -5,19 +5,27 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ViewGroup
+import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.widget.Toast
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_recycler.*
 import kotlinx.android.synthetic.main.dialog.view.*
+import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+import android.support.v4.app.SupportActivity
+import android.support.v4.app.SupportActivity.ExtraData
+import android.support.v4.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.support.v4.app.NotificationCompat
+import android.view.*
+
 
 class RecyclerActivity : AppCompatActivity(){
 
@@ -36,7 +44,6 @@ class RecyclerActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler)
-        recyclerView = recyclerViewPessoas
         RecyclerActivity.activity = this@RecyclerActivity
         TesteWebClient().callbackRecyclerVerification(pessoaList, this, recyclerViewPessoas)
         configureCardView()
@@ -45,6 +52,7 @@ class RecyclerActivity : AppCompatActivity(){
         updateDialog(this, this)
         back()
     }
+
 
     fun back(){
         btn_recycler_back.setOnClickListener {
@@ -63,14 +71,15 @@ class RecyclerActivity : AppCompatActivity(){
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     fun configureCardView(){
         pessoaAdapter = PessoaAdapter(this, pessoaList, recyclerView)
         recyclerViewPessoas.adapter = pessoaAdapter
         recyclerViewPessoas.layoutManager = LinearLayoutManager(this)
         recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
     }
-    fun dialog(activity: Activity, context: Context){
 
+    fun dialog(activity: Activity, context: Context){
         Fab.setOnClickListener {
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.dialog,
                 window.decorView as ViewGroup,
@@ -96,6 +105,7 @@ class RecyclerActivity : AppCompatActivity(){
                 .show()
         }
     }
+
     fun deleteDialog(activity: Activity, context: Context){
         btn_recycler_delete.setOnClickListener{
             Toast.makeText(context, "Não funcionou", Toast.LENGTH_SHORT).show()

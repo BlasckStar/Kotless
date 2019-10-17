@@ -13,4 +13,9 @@
         <item name = "android:windowNoTitle">true</item>
     </style>
 
+    <style name="Teste" parent="Theme.Design.NoActionBar">
+        <item name="colorPrimary">@color/pinkGrey</item>item>
+        <item name="colorPrimaryDark">@color/pinkGrey</item>
+        <item name="colorAccent">@color/greenGray</item>
+    </style>
 </resources>
