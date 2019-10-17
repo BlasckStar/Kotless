@@ -2,6 +2,7 @@ package com.example.labicarus.kotless
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
@@ -11,6 +12,9 @@ class SplashActivity: AppCompatActivity(){
         companion object{
             @SuppressLint("StaticFieldLeak")
             var activity: Activity = Activity()
+
+            @SuppressLint("StaticFieldLeak")
+            var context: Context? = null
         }
     }
 
@@ -18,6 +22,7 @@ class SplashActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_screen)
         SplashClass.activity = this@SplashActivity
+        SplashClass.context = this
         if(MainActivity.init){
             MainActivity().initSwitch()
 

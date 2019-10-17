@@ -1,5 +1,6 @@
 package com.example.labicarus.kotless
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -19,6 +21,13 @@ import kotlinx.android.synthetic.main.dialog.view.*
 
 class RecyclerActivity : AppCompatActivity(){
 
+    companion object{
+        @SuppressLint("StaticFieldLeak")
+        var activity: Activity = Activity()
+
+        @SuppressLint("StaticFieldLeak")
+        var recyclerView: RecyclerView? = null
+    }
     val pessoaList: MutableList<Employees> = mutableListOf()
     val list: MutableList<Employees> = mutableListOf()
 
@@ -27,6 +36,8 @@ class RecyclerActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler)
+        recyclerView = recyclerViewPessoas
+        RecyclerActivity.activity = this@RecyclerActivity
         TesteWebClient().callbackRecyclerVerification(pessoaList, this, recyclerViewPessoas)
         configureCardView()
         dialog(this, this)
@@ -53,7 +64,7 @@ class RecyclerActivity : AppCompatActivity(){
         }
     }
     fun configureCardView(){
-        pessoaAdapter = PessoaAdapter(this, pessoaList)
+        pessoaAdapter = PessoaAdapter(this, pessoaList, recyclerView)
         recyclerViewPessoas.adapter = pessoaAdapter
         recyclerViewPessoas.layoutManager = LinearLayoutManager(this)
         recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
@@ -65,7 +76,7 @@ class RecyclerActivity : AppCompatActivity(){
                 window.decorView as ViewGroup,
                 false)
             AlertDialog.Builder(this@RecyclerActivity)
-                .setTitle("Add Note")
+                .setTitle("Criar usuario")
                 .setView(createdView)
                 .setPositiveButton("Save", object: DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, which: Int) {
@@ -93,7 +104,7 @@ class RecyclerActivity : AppCompatActivity(){
                 window.decorView as ViewGroup,
                 false)
             AlertDialog.Builder(this@RecyclerActivity)
-                .setTitle("Delete User")
+                .setTitle("Deletar usuario")
                 .setView(createdView)
                 .setPositiveButton("Delete", object: DialogInterface.OnClickListener{
                     override fun onClick(dialog: DialogInterface?, which: Int) {
@@ -106,6 +117,7 @@ class RecyclerActivity : AppCompatActivity(){
                 .show()
         }
     }
+
     fun updateDialog(activity: Activity, context: Context){
         btn_recycler_update.setOnClickListener{
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.update_dialog,

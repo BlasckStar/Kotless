@@ -21,11 +21,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    var userinfo: MutableList<Pessoa>? = mutableListOf()
+    var userinfo: MutableList<Employees>? = mutableListOf()
     var tokenInfo: MutableList<TokenData> = mutableListOf()
     var list:MutableList<String>? = null
     var plist:MutableList<String>? = null
-
 
     @SuppressLint("ShowToast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,19 +41,7 @@ class MainActivity : AppCompatActivity() {
         server()
         options()
     }
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
 
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
-            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages ->
-                val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
-
-                // Process the messages array.
-
-                Toast.makeText(this, messages.toString(), Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
     fun recycler(){
         btn_recycler.setOnClickListener {
             if(TesteWebClient.userToken != ""){
