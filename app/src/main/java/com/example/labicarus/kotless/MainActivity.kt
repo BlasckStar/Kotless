@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         if (init){
             TesteWebClient().retrieveInfo(this, userinfo)
             TesteWebClient().testeToken(this, "primeiro", tokenInfo)
+            Notification().configureNotification(this)
         }
         //endregion
 

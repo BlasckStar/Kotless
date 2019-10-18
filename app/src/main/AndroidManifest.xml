@@ -37,6 +37,10 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".NotificationActivity"
+                android:screenOrientation="portrait">
+
+        </activity>
 
     </application>
 
