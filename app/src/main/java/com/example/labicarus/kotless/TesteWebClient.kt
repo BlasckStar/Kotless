@@ -36,6 +36,12 @@ class TesteWebClient {
         var description: String? = null
     }
 
+    /*
+        OBS: A Maioria dos request não estão sendo feitos diretamente por suas funções base eles estão
+        sendo chamadas por meio de uma função de request de verificação unica para cada com o intuito
+        de melhorar um pouquinho a segurança de uma forma simploria mas que funciona.
+     */
+
     // region //----- RECYCLER REQUESTS -----\\
     fun callbackRecycler(list: MutableList<Employees>, activity: Activity, recycler: RecyclerView?){
 
@@ -66,8 +72,8 @@ class TesteWebClient {
     fun configureCardView(context: Activity, list: MutableList<Employees>, recycler: RecyclerView?){
         val pessoaAdapter = PessoaAdapter(context, list, recycler)
         recycler!!.adapter = pessoaAdapter
-        recycler!!.layoutManager = LinearLayoutManager(context)
-        recycler!!.smoothScrollToPosition(list!!.size)
+        recycler.layoutManager = LinearLayoutManager(context)
+        recycler.smoothScrollToPosition(list.size)
         stopActivity()
     }
     //endregion
@@ -163,7 +169,7 @@ class TesteWebClient {
     fun getIdToDelete(response: JsonElement, list: MutableList<Employees>, context: Context, activity: Activity, recycler: RecyclerView?){
         val info = gson.fromJson(response, Array<Employees>::class.java)
         for (x in info.indices){
-            list!!.add(Employees(info[x]._id, info[x].name, info[x].email, info[x].hierarchy, info[x].description))
+            list.add(Employees(info[x]._id, info[x].name, info[x].email, info[x].hierarchy, info[x].description))
         }
         if(info.size > 1){
             Toast.makeText(context, "Mais de um usuario", Toast.LENGTH_SHORT).show()
@@ -332,19 +338,19 @@ class TesteWebClient {
     //endregion
 
     // region //----- TOKENS -----\\
-    fun testeToken(context: Context, _token: String, list: MutableList<TokenData>){
+    fun testeToken(context: Context, _token: String, list: MutableList<Tokens>){
         call.searchEmployeeToken(_token).enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body().let{
                     val info = it
-                    val ulist: MutableList<UserData> = mutableListOf()
-                    val jsinho = gson.fromJson(info, Array<IdToken>::class.java)
+                    val ulist: MutableList<TokenUser> = mutableListOf()
+                    val jsinho = gson.fromJson(info, Array<Tokens>::class.java)
                     for (x in jsinho.indices){
                         ulist.clear()
                         for(y in jsinho[x].users.indices) {
-                            ulist.add(UserData(jsinho[x].users[y].toString()))
+                            ulist.add(TokenUser(jsinho[x].users[y].toString()))
                         }
-                        list.add(TokenData(jsinho[x]._id.toString(),jsinho[x].token.toString(), ulist))
+                        list.add(Tokens(jsinho[x]._id.toString(),jsinho[x].token.toString(), ulist))
                     }
                     Toast.makeText(context, list.toString(), Toast.LENGTH_SHORT).show()
                 }
@@ -354,18 +360,18 @@ class TesteWebClient {
             }
         })
     }
-    fun callbackToken(context: Context, list:MutableList<IdToken>){
+    fun callbackToken(context: Context, list:MutableList<Tokens>){
         call.searchTokens().enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
-                    val listin: MutableList<UserToken> = mutableListOf()
-                    val jsonTokens = gson.fromJson(info, Array<IdToken>::class.java)
+                    val listin: MutableList<TokenUser> = mutableListOf()
+                    val jsonTokens = gson.fromJson(info, Array<Tokens>::class.java)
                     for (x in jsonTokens.indices) {
                         for(y in jsonTokens[x].users.indices){
-                            listin.add(UserToken(jsonTokens[x].users[y]._id, jsonTokens[x].users[y].user))
+                            listin.add(TokenUser(jsonTokens[x].users[y].user))
                         }
-                        list.add(IdToken(jsonTokens[x]._id.toString(), jsonTokens[x].token, listin))
+                        list.add(Tokens(jsonTokens[x]._id.toString(), jsonTokens[x].token, listin))
                     }
                 }
             }
@@ -385,7 +391,7 @@ class TesteWebClient {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let{
                     val info = it
-                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    val jsonToken = gson.fromJson(info, Array<Tokens>::class.java)
                     if (jsonToken.size == 1) {
                         for(x in jsonToken[0].users.indices){
                             if (jsonToken[0].users[x].user == user){
@@ -406,7 +412,7 @@ class TesteWebClient {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let {
                     val info = it
-                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    val jsonToken = gson.fromJson(info, Array<Tokens>::class.java)
                     if (jsonToken.size == 1) {
                         for (x in jsonToken[0].users.indices) {
                             if (jsonToken[0].users[x].user == Companion.user) {
@@ -428,7 +434,7 @@ class TesteWebClient {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let {
                     val info = it
-                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    val jsonToken = gson.fromJson(info, Array<Tokens>::class.java)
                     if (jsonToken.size == 1) {
                         for (x in jsonToken[0].users.indices) {
                             if (jsonToken[0].users[x].user == Companion.user) {
@@ -451,7 +457,7 @@ class TesteWebClient {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let {
                     val info = it
-                    val jsonToken = gson.fromJson(info, Array<IdToken>::class.java)
+                    val jsonToken = gson.fromJson(info, Array<Tokens>::class.java)
                     if (jsonToken.size == 1) {
                         for (x in jsonToken[0].users.indices) {
                             if (jsonToken[0].users[x].user == Companion.user) {
@@ -466,13 +472,13 @@ class TesteWebClient {
             }
         })
     }
-    fun callbackLoginVerification(context: Context){
+    private fun callbackLoginVerification(context: Context){
         userToken = ""
         call.searchTokens().enqueue(object: Callback<JsonElement>{
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
                 response?.body()?.let {
                     val info = it
-                    val jsonResponse = gson.fromJson(info, Array<IdToken>::class.java)
+                    val jsonResponse = gson.fromJson(info, Array<Tokens>::class.java)
                     for (x in jsonResponse.indices) {
                         for(y in jsonResponse[x].users.indices){
                             if(jsonResponse[x].users[y].user == user){

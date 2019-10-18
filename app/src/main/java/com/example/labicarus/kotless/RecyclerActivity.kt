@@ -36,50 +36,32 @@ class RecyclerActivity : AppCompatActivity(){
         @SuppressLint("StaticFieldLeak")
         var recyclerView: RecyclerView? = null
     }
+
+    //region //----- UNIQUE VARIABLES -----\\
     val pessoaList: MutableList<Employees> = mutableListOf()
     val list: MutableList<Employees> = mutableListOf()
-
     lateinit var pessoaAdapter: PessoaAdapter
+    //endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler)
+        //region //----- INIT ACTIVITY -----\\
         RecyclerActivity.activity = this@RecyclerActivity
         TesteWebClient().callbackRecyclerVerification(pessoaList, this, recyclerViewPessoas)
         configureCardView()
-        dialog(this, this)
-        deleteDialog(this, this)
-        updateDialog(this, this)
-        back()
+        //endregion
+
+        //region //----- LISTENERS -----\\
+        buttonListeners(this, this)
+        //endregion
     }
 
-
-    fun back(){
+    //region //----- LISTENERS FUNCITONS -----\\
+    fun buttonListeners(activity: Activity, context: Context){
         btn_recycler_back.setOnClickListener {
             finish()
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    fun configureCardView(){
-        pessoaAdapter = PessoaAdapter(this, pessoaList, recyclerView)
-        recyclerViewPessoas.adapter = pessoaAdapter
-        recyclerViewPessoas.layoutManager = LinearLayoutManager(this)
-        recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
-    }
-
-    fun dialog(activity: Activity, context: Context){
         Fab.setOnClickListener {
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.dialog,
                 window.decorView as ViewGroup,
@@ -104,9 +86,6 @@ class RecyclerActivity : AppCompatActivity(){
                 })
                 .show()
         }
-    }
-
-    fun deleteDialog(activity: Activity, context: Context){
         btn_recycler_delete.setOnClickListener{
             Toast.makeText(context, "Não funcionou", Toast.LENGTH_SHORT).show()
 
@@ -126,9 +105,6 @@ class RecyclerActivity : AppCompatActivity(){
                 })
                 .show()
         }
-    }
-
-    fun updateDialog(activity: Activity, context: Context){
         btn_recycler_update.setOnClickListener{
             val createdView =LayoutInflater.from(this@RecyclerActivity).inflate(R.layout.update_dialog,
                 window.decorView as ViewGroup,
@@ -147,4 +123,24 @@ class RecyclerActivity : AppCompatActivity(){
                 .show()
         }
     }
+    //endregion
+
+    //region //----- RECYCLER/CARD VIEWS CONFIGS -----\\
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    fun configureCardView(){
+        pessoaAdapter = PessoaAdapter(this, pessoaList, recyclerView)
+        recyclerViewPessoas.adapter = pessoaAdapter
+        recyclerViewPessoas.layoutManager = LinearLayoutManager(this)
+        recyclerViewPessoas.smoothScrollToPosition(pessoaList.size)
+    }
+    //endregion
 }

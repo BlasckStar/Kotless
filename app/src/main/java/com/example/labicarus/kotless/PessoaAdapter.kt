@@ -18,9 +18,9 @@ import kotlinx.android.synthetic.main.delete_dialog.view.*
 import kotlinx.android.synthetic.main.dialog.view.*
 import kotlinx.android.synthetic.main.pessoa_item.view.*
 
-class PessoaAdapter(private val context: Context, private var pessoaList: MutableList<Employees>, _recycler: RecyclerView?):
-    RecyclerView.Adapter<PessoaAdapter.PessoaViewHolder>() {
+class PessoaAdapter(private val context: Context, private var pessoaList: MutableList<Employees>, _recycler: RecyclerView?): RecyclerView.Adapter<PessoaAdapter.PessoaViewHolder>() {
 
+    //region //----- ADAPTER FUNCTIONS -----\\
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PessoaViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.pessoa_item, parent, false)
         return PessoaViewHolder(view)
@@ -29,8 +29,12 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
     override fun getItemCount() = pessoaList.size
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: PessoaViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PessoaViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        //region //----- HOLDER CONFIG -----\\
         holder.bindView(pessoaList[position])
+        //endregion
+
+        //region //----- LISTENERS FUNCTION -----\\
         holder.btnDelete.setOnClickListener{
             val createdView =LayoutInflater.from(RecyclerActivity.activity).inflate(R.layout.delete_dialog,
                 RecyclerActivity.activity.window.decorView as ViewGroup,
@@ -49,8 +53,12 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
         holder.btnUpdate.setOnClickListener{
             TesteWebClient().callbackUpdateVerification(RecyclerActivity.activity, RecyclerActivity.activity, pessoaList, RecyclerActivity.recyclerView, pessoaList[position].name.toString())
         }
-    }
+        //endregion
 
+    }
+    //endregion
+
+    //region //----- HOLDER CONFIG -----\\
     class PessoaViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val textViewNome = itemView.textViewNome
         val textViewTelefone = itemView.textViewTelefone
@@ -62,5 +70,6 @@ class PessoaAdapter(private val context: Context, private var pessoaList: Mutabl
             textViewTelefone.text = pessoa.email
         }
     }
-    
+    //endregion
+
 }

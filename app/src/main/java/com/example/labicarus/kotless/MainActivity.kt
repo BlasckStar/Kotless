@@ -17,56 +17,62 @@ class MainActivity : AppCompatActivity() {
         val timeOut:Long = 1000 //Loading duration
     }
 
-
+    //region //----- Unique variables -----\\
     var userinfo: MutableList<Employees>? = mutableListOf()
-    var tokenInfo: MutableList<TokenData> = mutableListOf()
+    var tokenInfo: MutableList<Tokens> = mutableListOf()
+    //endregion
 
     @SuppressLint("ShowToast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //region //----- Init -----\\
         startActivity(Intent(this, SplashActivity::class.java))
         if (init){
             TesteWebClient().retrieveInfo(this, userinfo)
+            TesteWebClient().testeToken(this, "primeiro", tokenInfo)
         }
+        //endregion
+
+        // region //----- Listeners -----\\
         hand()
-        TesteWebClient().testeToken(this, "primeiro", tokenInfo)
-        logout()
-        recycler()
-        server()
-        options()
+        buttons()
+        //endregion
+
     }
 
-    fun recycler(){
-        btn_recycler.setOnClickListener {
-            if(TesteWebClient.userToken != ""){
-                val intent = Intent(this, RecyclerActivity::class.java)
-                startActivity(intent)
-            }else{
-                Toast.makeText(this, "Você não tem permissão", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    fun server(){
+    // region //----- Listeners function -----\\
+    fun buttons(){
         btn_request.setOnClickListener {
-            val intent = Intent(this, CallbackActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, CallbackActivity::class.java))
         }
-    }
 
-    fun logout(){
         btn_logout.setOnClickListener {
             if (!TesteWebClient.login){
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(this, LoginActivity::class.java))
             }else{
                 var mainActivity = this@MainActivity; TesteWebClient().logut()
                 hand()
             }
         }
-    }
 
+        btn_recycler.setOnClickListener {
+            if(TesteWebClient.userToken != ""){
+                startActivity(Intent(this, RecyclerActivity::class.java))
+            }else{
+                Toast.makeText(this, "Você não tem permissão", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btn_options.setOnClickListener{
+            if(TesteWebClient.userToken != ""){
+                startActivity(Intent(this, OptionsActivity::class.java))
+            }else{
+                Toast.makeText(this, "Você não tem permissão", Toast.LENGTH_SHORT).show()
+            }
+        }
+    } // Buttons clickListeners
     fun hand(){
         val handler = Handler(Looper.getMainLooper())
         handler.post(object: Runnable{
@@ -88,22 +94,15 @@ class MainActivity : AppCompatActivity() {
                 handler.postDelayed(this, 1000)
             }
         })
-    }
+    } // Hand its a updater data for components
+    //endregion
 
+    //region //----- Companion editors -----\\
     fun initSwitch(){
         if (MainActivity.init){
             MainActivity.init = false
         }
-    }
-
-    fun options(){
-        btn_options.setOnClickListener{
-            if(TesteWebClient.userToken != ""){
-                startActivity(Intent(this, OptionsActivity::class.java))
-            }else{
-                Toast.makeText(this, "Você não tem permissão", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    } // Make Init False for nex calls
+    //endregion
 
 }

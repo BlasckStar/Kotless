@@ -8,6 +8,7 @@ import retrofit2.http.*
 
 interface TesteService {
 
+    //todos os tipos de callback que o servido faz no momento estão aqui
 
     // region //----- LOGIN SERVICE REQUESTS -----\\
     @GET("loginService")

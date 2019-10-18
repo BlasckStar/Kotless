@@ -32,5 +32,4 @@ class SharedPreference (context: Context) {
         editor.apply()
     }
 
-
 }

@@ -28,22 +28,31 @@ class LoginActivity: AppCompatActivity() {
             var loading: Activity? = null
         }
     }
+
+    //region //----- UNIQUE VARIABLES -----\\
     var list: MutableList<Employees>? = mutableListOf()
+    //endregion
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-        //----------------Function-------------------//
+
+        //region //----- INIT -----\\
         LoginClass.activity = this@LoginActivity
-        //----------------buttons--------------------//
-        back()
-        teste()
+        //endregion
+
+        //region //----- LISTENERS -----\\
+        buttonListeners()
+        //endregion
+
     }
-    fun back(){
+
+    //region //----- LISTENERS FUNCTION -----\\
+    fun buttonListeners(){
         btn_login_back.setOnClickListener {
             finish()
         }
-    }
-    fun teste(){
+
         btn_login_enter.setOnClickListener {
             if (input_login_username.text.toString() != "" && input_login_password.text.toString() != ""){
                 val username =  input_login_username.text.toString()
@@ -55,4 +64,6 @@ class LoginActivity: AppCompatActivity() {
             }
         }
     }
+    //endregion
+
 }

@@ -10,9 +10,13 @@ class OptionsActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.setup_activity)
+
+        //region //----- LISTENERS -----\\
         buttons()
+        //endregion
     }
 
+    //region //----- LISTENERS FUNCTION -----\\
     fun buttons(){
         btn_options_save.setOnClickListener{
             TesteWebClient().saveInfo(this)
@@ -25,4 +29,6 @@ class OptionsActivity : AppCompatActivity(){
             finish()
         }
     }
+    //endregion
+
 }

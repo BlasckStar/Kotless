@@ -24,6 +24,9 @@ data class Employees(
 
 )
 
+/*  Para dar um POST no servidor não é nescessario haver uma field _id pq o servidor que automaticamente
+    cria ela então este employeePost foi nescessario ser criado apenas para fazer o POST no servidor
+*/
 data class EmployeePost
     (
 
