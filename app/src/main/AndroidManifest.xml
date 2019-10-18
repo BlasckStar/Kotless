@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
+
 
     <application
             android:allowBackup="true"
@@ -13,6 +16,8 @@
             android:supportsRtl="true"
             android:theme="@style/Teste"
             android:usesCleartextTraffic="true">
+
+        <meta-data  android:name="com.google.ar.core" android:value="required"/>
         <activity android:name=".MainActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -37,9 +42,8 @@
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".NotificationActivity"
+        <activity android:name=".ArcoreActivity"
                 android:screenOrientation="portrait">
-
         </activity>
 
     </application>
