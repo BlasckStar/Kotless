@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     // region //----- Listeners function -----\\
     fun buttons(){
         btn_request.setOnClickListener {
-            startActivity(Intent(this, ArcoreActivity::class.java))
+            startActivity(Intent(this, CallbackActivity::class.java))
         }
 
         btn_logout.setOnClickListener {
