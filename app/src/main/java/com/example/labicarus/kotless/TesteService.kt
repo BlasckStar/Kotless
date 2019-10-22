@@ -1,8 +1,6 @@
 package com.example.labicarus.kotless
 
 import com.google.gson.JsonElement
-import okhttp3.RequestBody
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -52,6 +50,8 @@ interface TesteService {
     @GET("employeeService")
     fun  searchEmployee(@Query("name") name: String?): Call<JsonElement>
 
+    @GET("employeeService")
+    fun searchEmployeeByEmail(@Query("email") email: String): Call<JsonElement>
 
     @POST("employeeService")
     @Headers("Content-Type: application/json")

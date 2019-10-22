@@ -4,4 +4,5 @@
     <string name="entrar">Entrar</string>
     <string name="senha">Senha</string>
     <string name="voltar">Voltar</string>
+    <string name="facebook_app_id">656285501563284</string> <string name="fb_login_protocol_scheme">fb656285501563284</string>
 </resources>

@@ -237,8 +237,11 @@ class TesteWebClient {
                         val mEmail = createdView.input_email.text.toString()
                         val mPassword = CryptoClient().encode(createdView.input_password.text.toString()+mUsername)
                         val mDescription = createdView.input_dialog_description.text.toString()
-                        startActivity(context, Intent(context, SplashActivity::class.java), Bundle())
-                        callbackUpdate(activity, context, list, recycler, mUsername, mEmail, mPassword, info[0]._id.toString(), info[0].hierarchy.toString(), mDescription)
+                        if (mPassword != ""){
+                            startActivity(context, Intent(context, SplashActivity::class.java), Bundle())
+                            callbackUpdate(activity, context, list, recycler, mUsername, mEmail, mPassword, info[0]._id.toString(), info[0].hierarchy.toString(), mDescription)
+                        }else{ Toast.makeText(context, "Entre com uma senha", Toast.LENGTH_SHORT).show()
+                        callbackRecycler(list, activity, recycler)}
                     }
                 })
                 .show()
@@ -336,6 +339,7 @@ class TesteWebClient {
         }, timeOut)
     }
     //endregion
+
 
     // region //----- TOKENS -----\\
     fun testeToken(context: Context, _token: String, list: MutableList<Tokens>){
@@ -516,4 +520,28 @@ class TesteWebClient {
     }
     //endregion
 
+    fun callbackByEmail(string: String, context: Context){
+        call.searchEmployeeByEmail(string).enqueue(object: Callback<JsonElement>{
+            override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>?) {
+                response?.body().let{
+                    val info = it
+                    val jsinho = gson.fromJson(info, Array<Employees>::class.java)
+                    if (jsinho.size > 1){
+                        Toast.makeText(context, "Mais de um usuario cadastrado", Toast.LENGTH_SHORT).show()
+                    }
+                    if(jsinho.size == 1){
+                        Toast.makeText(context, "Achado ${jsinho[0].name}", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        Toast.makeText(context, "Não existe usuario com este email", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                Toast.makeText(context, "Não foi possivel conectar", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
 }

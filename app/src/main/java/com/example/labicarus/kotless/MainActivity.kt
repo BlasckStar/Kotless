@@ -106,4 +106,10 @@ class MainActivity : AppCompatActivity() {
     } // Make Init False for nex calls
     //endregion
 
+    //region //----- TESTES -----\\
+
+
+
+    //endregion
+
 }
